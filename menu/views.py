@@ -1,19 +1,21 @@
-# menu/views.py
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Menu, MenuItem, Category
 from django.contrib.auth.decorators import login_required
-from .forms import MenuForm, MenuItemForm, CategoryForm
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.shortcuts import render, get_object_or_404, redirect
+
+from .forms import MenuForm, MenuItemForm, CategoryForm
+from .models import Menu, MenuItem, Category
+
 
 def home(request):
     return render(request, 'menu/home.html')
+
 
 @login_required
 def menu_list(request):
     menus = Menu.objects.filter(user=request.user)
     return render(request, 'menu/menu_list.html', {'menus': menus})
+
 
 @login_required
 def menu_create(request):
@@ -28,6 +30,7 @@ def menu_create(request):
         form = MenuForm()
     return render(request, 'menu/menu_form.html', {'form': form})
 
+
 def menu_detail(request, slug):
     menu = get_object_or_404(Menu, slug=slug)
     categories = menu.categories.all()
@@ -38,6 +41,7 @@ def menu_detail(request, slug):
         'menu_items_without_category': menu_items_without_category,
     }
     return render(request, 'menu/menu_detail.html', context)
+
 
 @login_required
 def menu_update(request, slug):
@@ -51,6 +55,7 @@ def menu_update(request, slug):
         form = MenuForm(instance=menu)
     return render(request, 'menu/menu_form.html', {'form': form})
 
+
 @login_required
 def menu_delete(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
@@ -58,6 +63,7 @@ def menu_delete(request, slug):
         menu.delete()
         return redirect('menu_list')
     return render(request, 'menu/menu_confirm_delete.html', {'menu': menu})
+
 
 # Admin Dashboard
 @login_required
@@ -73,3 +79,121 @@ def admin_dashboard(request):
     menu_items = paginator.get_page(page_number)
 
     return render(request, 'menu/admin_dashboard.html', {'menu_items': menu_items, 'query': query})
+
+
+@login_required
+def menu_item_list(request, slug):
+    # Retrieve the menu and ensure it belongs to the user
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    # Get all MenuItems associated with this menu
+    menu_items = menu.menu_items.all()
+    return render(request, 'menu/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
+
+@login_required
+def menu_item_create(request, slug):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST, request.FILES, menu=menu)
+        if form.is_valid():
+            menu_item = form.save()
+            # Associate the MenuItem with the Menu
+            menu_item.menus.add(menu)
+            return redirect('menu_item_list', slug=menu.slug)
+    else:
+        form = MenuItemForm(menu=menu)
+    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu})
+
+
+@login_required
+def menu_item_detail(request, slug, menu_item_id):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
+    return render(request, 'menu/menu_item_detail.html', {'menu': menu, 'menu_item': menu_item})
+
+
+@login_required
+def menu_item_update(request, slug, menu_item_id):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST, request.FILES, instance=menu_item, menu=menu)
+        if form.is_valid():
+            form.save()
+            return redirect('menu_item_list', slug=menu.slug)
+    else:
+        form = MenuItemForm(instance=menu_item, menu=menu)
+    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu})
+
+
+@login_required
+def menu_item_delete(request, slug, menu_item_id):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
+    if request.method == 'POST':
+        # Remove the MenuItem from the Menu
+        menu_item.menus.remove(menu)
+        # If the MenuItem is not associated with any other Menus, delete it
+        if menu_item.menus.count() == 0:
+            menu_item.delete()
+        return redirect('menu_item_list', slug=menu.slug)
+    return render(request, 'menu/menu_item_confirm_delete.html', {'menu': menu, 'menu_item': menu_item})
+
+
+@login_required
+def category_list(request, slug):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    categories = menu.categories.all()
+    return render(request, 'menu/category_list.html', {'menu': menu, 'categories': categories})
+
+
+@login_required
+def category_create(request, slug):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()
+            # Associate the Category with the Menu
+            category.menus.add(menu)
+            return redirect('category_list', slug=menu.slug)
+    else:
+        form = CategoryForm()
+    return render(request, 'menu/category_form.html', {'form': form, 'menu': menu})
+
+
+@login_required
+def category_detail(request, slug, category_id):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    category = get_object_or_404(Category, id=category_id, menus=menu)
+    # Get MenuItems in this Category and associated with the Menu
+    menu_items = category.menu_items.filter(menus=menu)
+    return render(request, 'menu/category_detail.html', {'menu': menu, 'category': category, 'menu_items': menu_items})
+
+
+@login_required
+def category_update(request, slug, category_id):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    category = get_object_or_404(Category, id=category_id, menus=menu)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('category_list', slug=menu.slug)
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'menu/category_form.html', {'form': form, 'menu': menu})
+
+
+@login_required
+def category_delete(request, slug, category_id):
+    menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    category = get_object_or_404(Category, id=category_id, menus=menu)
+    if request.method == 'POST':
+        # Remove the Category from the Menu
+        category.menus.remove(menu)
+        # If the Category is not associated with any other Menus, delete it
+        if category.menus.count() == 0:
+            category.delete()
+        return redirect('category_list', slug=menu.slug)
+    return render(request, 'menu/category_confirm_delete.html', {'menu': menu, 'category': category})
+

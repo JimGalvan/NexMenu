@@ -3,83 +3,92 @@
 {% extends 'menu/base.html' %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">{{ menu.name }}</h1>
+    <h1 class="text-2xl font-bold mb-4">{{ menu.name }}</h1>
 
-{% if categories %}
-<!-- Navigation -->
-<nav class="mb-4">
-    <ul class="flex space-x-4">
+    {% if categories %}
+        <!-- Navigation -->
+        <nav class="mb-4">
+            <ul class="flex space-x-4">
+                {% for category in categories %}
+                    <li>
+                        <a href="#{{ category.id }}" class="text-blue-500">{{ category.name }}</a>
+                    </li>
+                {% endfor %}
+                {% if menu_items_without_category %}
+                    <li>
+                        <a href="#other" class="text-blue-500">Other</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <!-- Categories and Items -->
         {% for category in categories %}
-        <li><a href="#{{ category.id }}" class="text-blue-500">{{ category.name }}</a></li>
+            <section id="{{ category.id }}" class="mt-8">
+                <h2 class="text-xl font-semibold">{{ category.name }}</h2>
+                <ul>
+                    {% for item in category.menu_items.all %}
+                        <li class="border-b py-2">
+                            <div class="flex items-center">
+                                {% if item.photo %}
+                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4" loading="lazy">
+                                {% endif %}
+                                <div>
+                                    <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
+                                    <p>{{ item.description }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li>No items in this category.</li>
+                    {% endfor %}
+                </ul>
+            </section>
         {% endfor %}
+
         {% if menu_items_without_category %}
-        <li><a href="#other" class="text-blue-500">Other</a></li>
+            <section id="other" class="mt-8">
+                <h2 class="text-xl font-semibold">Other</h2>
+                <ul>
+                    {% for item in menu_items_without_category %}
+                        <li class="border-b py-2">
+                            <div class="flex items-center">
+                                {% if item.photo %}
+                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4" loading="lazy">
+                                {% endif %}
+                                <div>
+                                    <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
+                                    <p>{{ item.description }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li>No items in the "Other" category.</li>
+                    {% endfor %}
+                </ul>
+            </section>
         {% endif %}
-    </ul>
-</nav>
 
-<!-- Categories and Items -->
-{% for category in categories %}
-<h2 id="{{ category.id }}" class="text-xl font-semibold mt-8">{{ category.name }}</h2>
-<ul>
-    {% for item in category.menu_items.all %}
-    <li class="border-b py-2">
-        <div class="flex items-center">
-            {% if item.photo %}
-            <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4">
-            {% endif %}
-            <div>
-                <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-                <p>{{ item.description }}</p>
-            </div>
-        </div>
-    </li>
-    {% endfor %}
-    {% empty %}
-    <li>No items in this category.</li>
-    {% endfor %}
-</ul>
-{% endfor %}
-
-{% if menu_items_without_category %}
-<h2 id="other" class="text-xl font-semibold mt-8">Other</h2>
-<ul>
-    {% for item in menu_items_without_category %}
-    <li class="border-b py-2">
-        <div class="flex items-center">
-            {% if item.photo %}
-            <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4">
-            {% endif %}
-            <div>
-                <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-                <p>{{ item.description }}</p>
-            </div>
-        </div>
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% else %}
-<!-- No Categories -->
-<ul>
-    {% for item in menu.menu_items.all %}
-    <li class="border-b py-2">
-        <div class="flex items-center">
-            {% if item.photo %}
-            <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4">
-            {% endif %}
-            <div>
-                <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-                <p>{{ item.description }}</p>
-            </div>
-        </div>
-    </li>
-    {% endfor %}
-    {% empty %}
-    <li>No items in this menu.</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
+    {% else %}
+        <!-- No Categories -->
+        <section>
+            <ul>
+                {% for item in menu.menu_items.all %}
+                    <li class="border-b py-2">
+                        <div class="flex items-center">
+                            {% if item.photo %}
+                                <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4" loading="lazy">
+                            {% endif %}
+                            <div>
+                                <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
+                                <p>{{ item.description }}</p>
+                            </div>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>No items in this menu.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
 {% endblock %}
