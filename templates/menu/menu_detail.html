@@ -3,6 +3,9 @@
 {% extends 'menu/base.html' %}
 
 {% block content %}
+    {% if menu.logo %}
+        <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-32 h-32 mb-4">
+    {% endif %}
     <h1 class="text-2xl font-bold mb-4">{{ menu.name }}</h1>
 
     <!-- Management Buttons -->
