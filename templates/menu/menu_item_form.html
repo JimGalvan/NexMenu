@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1 class="text-2xl font-bold mb-4">
-    {% if form.instance.pk %}
+    {% if is_update %}
         Update Menu Item for "{{ menu.name }}"
     {% else %}
         Create New Menu Item for "{{ menu.name }}"
@@ -31,7 +31,7 @@
     {% endfor %}
     <div class="flex items-center justify-between">
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            {% if form.instance.pk %}
+            {% if is_update %}
                 Update Menu Item
             {% else %}
                 Create Menu Item

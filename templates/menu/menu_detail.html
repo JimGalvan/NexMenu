@@ -5,6 +5,26 @@
 {% block content %}
     <h1 class="text-2xl font-bold mb-4">{{ menu.name }}</h1>
 
+    <!-- Management Buttons -->
+    {% if user.is_authenticated and user == menu.user %}
+        <div class="mb-4">
+            <a href="{% url 'menu_update' menu.slug %}" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Edit
+                Menu</a>
+            <a href="{% url 'menu_delete' menu.slug %}" class="bg-red-500 text-white px-4 py-2 rounded mr-2">Delete
+                Menu</a>
+            <!-- Links to Category Management -->
+            <a href="{% url 'category_list' menu.slug %}" class="bg-green-500 text-white px-4 py-2 rounded mr-2">Manage
+                Categories</a>
+            <a href="{% url 'category_create' menu.slug %}" class="bg-green-500 text-white px-4 py-2 rounded mr-2">Add
+                Category</a>
+            <!-- Links to Menu Item Management -->
+            <a href="{% url 'menu_item_list' menu.slug %}" class="bg-yellow-500 text-white px-4 py-2 rounded mr-2">Manage
+                Menu Items</a>
+            <a href="{% url 'menu_item_create' menu.slug %}" class="bg-yellow-500 text-white px-4 py-2 rounded">Add Menu
+                Item</a>
+        </div>
+    {% endif %}
+
     {% if categories %}
         <!-- Navigation -->
         <nav class="mb-4">
@@ -25,7 +45,15 @@
         <!-- Categories and Items -->
         {% for category in categories %}
             <section id="{{ category.id }}" class="mt-8">
-                <h2 class="text-xl font-semibold">{{ category.name }}</h2>
+                <div class="flex items-center">
+                    <h2 class="text-xl font-semibold">{{ category.name }}</h2>
+                    {% if user.is_authenticated and user == menu.user %}
+                        <a href="{% url 'category_update' menu.slug category.id %}" class="text-blue-500 ml-4">Edit</a>
+                        <a href="{% url 'category_delete' menu.slug category.id %}" class="text-red-500 ml-2">Delete</a>
+                        <a href="{% url 'menu_item_create' menu.slug %}?category={{ category.id }}"
+                           class="text-green-500 ml-4">Add Item</a>
+                    {% endif %}
+                </div>
                 <ul>
                     {% for item in category.menu_items.all %}
                         <li class="border-b py-2">
@@ -36,6 +64,12 @@
                                 <div>
                                     <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
                                     <p>{{ item.description }}</p>
+                                    <!-- Edit and Delete Buttons for Menu Items -->
+                                    {% if user.is_authenticated and user == menu.user %}
+                                        <a href="{% url 'menu_item_update' menu.slug item.id %}"
+                                           class="text-blue-500 mr-2">Edit</a>
+                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="text-red-500">Delete</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </li>
@@ -48,7 +82,12 @@
 
         {% if menu_items_without_category %}
             <section id="other" class="mt-8">
-                <h2 class="text-xl font-semibold">Other</h2>
+                <div class="flex items-center">
+                    <h2 class="text-xl font-semibold">Other</h2>
+                    {% if user.is_authenticated and user == menu.user %}
+                        <a href="{% url 'menu_item_create' menu.slug %}" class="text-green-500 ml-4">Add Item</a>
+                    {% endif %}
+                </div>
                 <ul>
                     {% for item in menu_items_without_category %}
                         <li class="border-b py-2">
@@ -59,6 +98,12 @@
                                 <div>
                                     <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
                                     <p>{{ item.description }}</p>
+                                    <!-- Edit and Delete Buttons for Menu Items -->
+                                    {% if user.is_authenticated and user == menu.user %}
+                                        <a href="{% url 'menu_item_update' menu.slug item.id %}"
+                                           class="text-blue-500 mr-2">Edit</a>
+                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="text-red-500">Delete</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </li>
@@ -82,6 +127,12 @@
                             <div>
                                 <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
                                 <p>{{ item.description }}</p>
+                                <!-- Edit and Delete Buttons for Menu Items -->
+                                {% if user.is_authenticated and user == menu.user %}
+                                    <a href="{% url 'menu_item_update' menu.slug item.id %}" class="text-blue-500 mr-2">Edit</a>
+                                    <a href="{% url 'menu_item_delete' menu.slug item.id %}"
+                                       class="text-red-500">Delete</a>
+                                {% endif %}
                             </div>
                         </div>
                     </li>

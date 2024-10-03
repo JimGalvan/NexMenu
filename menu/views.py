@@ -28,7 +28,8 @@ def menu_create(request):
             return redirect('menu_list')
     else:
         form = MenuForm()
-    return render(request, 'menu/menu_form.html', {'form': form})
+    is_update: bool = False
+    return render(request, 'menu/menu_form.html', {'form': form, 'is_update': is_update})
 
 
 def menu_detail(request, slug):
@@ -53,7 +54,8 @@ def menu_update(request, slug):
             return redirect('menu_list')
     else:
         form = MenuForm(instance=menu)
-    return render(request, 'menu/menu_form.html', {'form': form})
+    is_update: bool = True
+    return render(request, 'menu/menu_form.html', {'form': form, 'is_update': is_update})
 
 
 @login_required
@@ -89,19 +91,28 @@ def menu_item_list(request, slug):
     menu_items = menu.menu_items.all()
     return render(request, 'menu/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
 
+
 @login_required
 def menu_item_create(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
+    category_id = request.GET.get('category')
+    initial_data = {}
+    if category_id:
+        try:
+            category = Category.objects.get(id=category_id, menus=menu)
+            initial_data['categories'] = [category]
+        except Category.DoesNotExist:
+            pass
     if request.method == 'POST':
         form = MenuItemForm(request.POST, request.FILES, menu=menu)
         if form.is_valid():
             menu_item = form.save()
-            # Associate the MenuItem with the Menu
             menu_item.menus.add(menu)
             return redirect('menu_item_list', slug=menu.slug)
     else:
-        form = MenuItemForm(menu=menu)
-    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu})
+        form = MenuItemForm(menu=menu, initial=initial_data)
+    is_update: bool = False
+    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
 
 
 @login_required
@@ -122,7 +133,8 @@ def menu_item_update(request, slug, menu_item_id):
             return redirect('menu_item_list', slug=menu.slug)
     else:
         form = MenuItemForm(instance=menu_item, menu=menu)
-    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu})
+    is_update: bool = True
+    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
 
 
 @login_required
