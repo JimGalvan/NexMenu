@@ -1,8 +1,11 @@
 # menu_app/models.py
 
 import uuid
-from django.db import models
+
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from django.db import models
 from django.utils.text import slugify
 
 
@@ -18,8 +21,18 @@ class Menu(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    logo = models.ImageField(upload_to='menus/logos/', blank=True, null=True)
+    logo = models.ImageField(
+        upload_to='menus/logos/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
+    )
     restaurant_name = models.CharField(max_length=255, blank=True, null=True)
+
+    def clean(self):
+        if self.logo:
+            if self.logo.size > 5 * 1024 * 1024:
+                raise ValidationError("Logo file size should be under 5MB.")
 
     def save(self, *args, **kwargs):
         if not self.slug:

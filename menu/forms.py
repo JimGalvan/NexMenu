@@ -9,9 +9,10 @@ class MenuForm(forms.ModelForm):
     class Meta:
         model = Menu
         fields = ['name', 'description', 'logo', 'restaurant_name']
+        widgets = {
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+        }
 
-
-# menu_app/forms.py
 
 class MenuItemForm(forms.ModelForm):
     class Meta:

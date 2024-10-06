@@ -1,17 +1,56 @@
 {% if user.is_authenticated %}
-    <nav hx-boost="true" class="bg-white shadow">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="text-xl font-bold">Menu App</a>
-            <div>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'menu_list' %}" class="mr-4">My Menus</a>
-                    <a href="{% url 'admin_dashboard' %}" class="mr-4">Admin Dashboard</a>
-                    <a href="{% url 'account_logout' %}">Logout</a>
-                {% else %}
-                    <a href="{% url 'account_login' %}" class="mr-4">Login</a>
-                    <a href="{% url 'account_signup' %}">Signup</a>
-                {% endif %}
+    <div class="fixed top-4 right-4 bg-[#4a4e69] text-white p-4 rounded-lg shadow-lg"
+         x-data="{ open: false, selected: '' }">
+        <!-- User and current page -->
+        <div class="flex items-center justify-between space-x-4">
+            <!-- User Info -->
+            <div class="flex items-center">
+                <span class="font-semibold">Hello, {{ user.username }}</span>
             </div>
+
+            <!-- Toggle button -->
+            <button @click="open = !open"
+                    class="bg-[#9a8c98] text-[#F2e9e4] rounded-full p-2 hover:bg-[#4a4e69] transition duration-300 focus:outline-none">
+                ☰
+            </button>
         </div>
-    </nav>
+
+        <!-- Dropdown menu -->
+        <div x-cloak x-show="open"
+             @click.outside="open = false"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-90"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-90"
+             class="mt-2 bg-[#22224b] rounded-lg p-4 shadow-lg text-[#F2e9e4]">
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'menu_list' %}"
+                   :class="selected === 'menus' ? 'text-white border-b-2 border-[#c9ada7]' : 'text-[#F2e9e4] hover:text-[#f0d9d8]'"
+                   @click="selected = 'menus'; open = false"
+                   class="block mb-2 transition-colors duration-300">My Menus</a>
+
+                <a href="{% url 'account_logout' %}"
+                   :class="selected === 'logout' ? 'text-white border-b-2 border-[#c9ada7]' : 'text-[#F2e9e4] hover:text-[#f0d9d8]'"
+                   @click="selected = 'logout'; open = false"
+                   class="block transition-colors duration-300">Logout</a>
+
+            {% else %}
+
+                <a href="{% url 'account_login' %}"
+                   :class="selected === 'login' ? 'text-white border-b-2 border-[#c9ada7]' : 'text-[#F2e9e4] hover:text-[#f0d9d8]'"
+                   @click="selected = 'login'; open = false"
+                   class="block mb-2 transition-colors duration-300">Login</a>
+
+                <a href="{% url 'account_signup' %}"
+                   :class="selected === 'signup' ? 'text-white border-b-2 border-[#c9ada7]' : 'text-[#F2e9e4] hover:text-[#f0d9d8]'"
+                   @click="selected = 'signup'; open = false"
+                   class="block transition-colors duration-300">Signup</a>
+
+            {% endif %}
+        </div>
+    </div>
 {% endif %}

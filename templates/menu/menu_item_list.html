@@ -1,24 +1,22 @@
-<!-- menu_app/templates/menu_app/menu_item_list.html -->
-
 {% extends 'menu/base.html' %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Menu Items for "{{ menu.name }}"</h1>
-<a href="{% url 'menu_item_create' menu.slug %}" class="bg-blue-500 text-white px-4 py-2 rounded">Create New Menu Item</a>
+<h1 class="text-2xl font-bold text-[#22224b] mb-4">Menu Items for "{{ menu.name }}"</h1>
+<a href="{% url 'menu_item_create' menu.slug %}" class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Create New Menu Item</a>
 <ul class="mt-4">
     {% for item in menu_items %}
     <li class="border-b py-2 flex justify-between">
         <div>
-            <a href="{% url 'menu_item_detail' menu.slug item.id %}" class="text-lg font-semibold">{{ item.name }}</a>
-            <p>${{ item.price }}</p>
+            <a href="{% url 'menu_item_detail' menu.slug item.id %}" class="text-lg font-semibold text-[#4a4e69] hover:text-[#22224b]">{{ item.name }}</a>
+            <p class="text-[#9a8c98]">${{ item.price }}</p>
         </div>
         <div>
-            <a href="{% url 'menu_item_update' menu.slug item.id %}" class="text-blue-500 mr-2">Edit</a>
-            <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="text-red-500">Delete</a>
+            <a href="{% url 'menu_item_update' menu.slug item.id %}" class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Edit</a>
+            <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98]">Delete</a>
         </div>
     </li>
     {% empty %}
-    <li>No menu items for this menu.</li>
+    <li class="text-[#9a8c98]">No menu items for this menu.</li>
     {% endfor %}
 </ul>
 {% endblock %}
