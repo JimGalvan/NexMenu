@@ -1,45 +1,81 @@
-<!-- menu_app/templates/menu_app/menu_detail.html -->
-
 {% extends 'menu/base.html' %}
-
 {% block content %}
-    {% if menu.logo %}
-        <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-32 h-32 mb-4" loading="lazy">
-    {% endif %}
-    <h1 class="text-2xl font-bold mb-4">{{ menu.name }}</h1>
+
+    <style>
+        .menu-detail .floating-bar {
+            position: relative;
+        {#align-content: center;#} padding: 1rem;
+            margin: 1rem;
+            transition: top 0.3s;
+            background-color: rgba(34, 34, 34, 62%); /* Dark gray with transparency */
+        {#display: flex;#} justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .menu-detail .floating-bar.fixed {
+            position: fixed;
+            z-index: 1000;
+        }
+    </style>
+
+    <script>
+        window.addEventListener('scroll', function () {
+            var floatingBar = document.getElementById('floating-bar-container');
+            if (window.scrollY > 100) { // Adjust the scroll position as needed
+                floatingBar.classList.add('fixed');
+            } else {
+                floatingBar.classList.remove('fixed');
+            }
+        });
+    </script>
+    <div class="menu-detail">
 
     <!-- Management Buttons -->
     {% if user.is_authenticated and user == menu.user %}
-        <div class="mb-4">
-            <a href="{% url 'menu_update' menu.slug %}" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Edit
-                Menu</a>
-            <a href="{% url 'menu_delete' menu.slug %}" class="bg-red-500 text-white px-4 py-2 rounded mr-2">Delete
-                Menu</a>
-            <!-- Links to Category Management -->
-            <a href="{% url 'category_list' menu.slug %}" class="bg-green-500 text-white px-4 py-2 rounded mr-2">Manage
-                Categories</a>
-            <a href="{% url 'category_create' menu.slug %}" class="bg-green-500 text-white px-4 py-2 rounded mr-2">Add
-                Category</a>
-            <!-- Links to Menu Item Management -->
-            <a href="{% url 'menu_item_list' menu.slug %}" class="bg-yellow-500 text-white px-4 py-2 rounded mr-2">Manage
-                Menu Items</a>
-            <a href="{% url 'menu_item_create' menu.slug %}" class="bg-yellow-500 text-white px-4 py-2 rounded">Add Menu
-                Item</a>
+        <div id="floating-bar-container" class="floating-bar rounded-lg">
+            <div class="flex flex-wrap gap-2">
+                <a href="{% url 'menu_update' menu.slug %}"
+                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Edit
+                    Menu</a>
+                <a href="{% url 'menu_delete' menu.slug %}"
+                   class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">Delete
+                    Menu</a>
+                <a href="{% url 'category_list' menu.slug %}"
+                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Manage
+                    Categories</a>
+                <a href="{% url 'category_create' menu.slug %}"
+                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Add
+                    Category</a>
+                <a href="{% url 'menu_item_list' menu.slug %}"
+                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Manage
+                    Menu Items</a>
+                <a href="{% url 'menu_item_create' menu.slug %}"
+                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Add
+                    Menu Item</a>
+            </div>
         </div>
     {% endif %}
 
-    {% if categories %}
+        {% if menu.logo %}
+            <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-32 h-32 mb-4 rounded-full shadow-lg"
+                 loading="lazy">
+        {% endif %}
+        <h1 class="text-3xl font-bold text-[#4a4e69] mb-6">{{ menu.name }}</h1>
+
+        {% if categories %}
         <!-- Navigation -->
-        <nav class="mb-4">
+            <nav class="mb-6">
             <ul class="flex space-x-4">
                 {% for category in categories %}
                     <li>
-                        <a href="#{{ category.id }}" class="text-blue-500">{{ category.name }}</a>
+                        <a href="#{{ category.id }}"
+                           class="text-[#4a4e69] hover:text-[#22224b] transition duration-300">{{ category.name }}</a>
                     </li>
                 {% endfor %}
                 {% if menu_items_without_category %}
                     <li>
-                        <a href="#other" class="text-blue-500">Other</a>
+                        <a href="#other" class="text-[#4a4e69] hover:text-[#22224b] transition duration-300">Other</a>
                     </li>
                 {% endif %}
             </ul>
@@ -48,36 +84,41 @@
         <!-- Categories and Items -->
         {% for category in categories %}
             <section id="{{ category.id }}" class="mt-8">
-                <div class="flex items-center">
-                    <h2 class="text-xl font-semibold">{{ category.name }}</h2>
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-[#4a4e69]">{{ category.name }}</h2>
                     {% if user.is_authenticated and user == menu.user %}
-                        <a href="{% url 'category_update' menu.slug category.id %}" class="text-blue-500 ml-4">Edit</a>
-                        <a href="{% url 'category_delete' menu.slug category.id %}" class="text-red-500 ml-2">Delete</a>
+                        <a href="{% url 'category_update' menu.slug category.id %}"
+                           class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 ml-4">Edit</a>
                         <a href="{% url 'menu_item_create' menu.slug %}?category={{ category.id }}"
-                           class="text-green-500 ml-4">Add Item</a>
+                           class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 ml-4">Add
+                            Item</a>
+                        <a href="{% url 'category_delete' menu.slug category.id %}"
+                           class="bg-[#c56c86] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300 ml-2">Delete</a>
                     {% endif %}
                 </div>
                 <ul>
                     {% for item in category.menu_items.all %}
-                        <li class="border-b py-2">
+                        <li class="border-b py-2 hover:bg-[#f8f8f8] transition duration-300">
                             <div class="flex items-center">
                                 {% if item.photo %}
-                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4" loading="lazy">
+                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}"
+                                         class="w-16 h-16 mr-4 rounded-full shadow-md" loading="lazy">
                                 {% endif %}
                                 <div>
-                                    <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-                                    <p>{{ item.description }}</p>
+                                    <p class="font-semibold text-[#4a4e69]">{{ item.name }} - ${{ item.price }}</p>
+                                    <p class="text-[#6b7280]">{{ item.description }}</p>
                                     <!-- Edit and Delete Buttons for Menu Items -->
                                     {% if user.is_authenticated and user == menu.user %}
                                         <a href="{% url 'menu_item_update' menu.slug item.id %}"
-                                           class="text-blue-500 mr-2">Edit</a>
-                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="text-red-500">Delete</a>
+                                           class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 mr-2">Edit</a>
+                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}"
+                                           class="bg-[#c56c86] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">Delete</a>
                                     {% endif %}
                                 </div>
                             </div>
                         </li>
                     {% empty %}
-                        <li>No items in this category.</li>
+                        <li class="text-[#6b7280]">No items in this category.</li>
                     {% endfor %}
                 </ul>
             </section>
@@ -85,33 +126,37 @@
 
         {% if menu_items_without_category %}
             <section id="other" class="mt-8">
-                <div class="flex items-center">
-                    <h2 class="text-xl font-semibold">Other</h2>
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-[#4a4e69]">Other</h2>
                     {% if user.is_authenticated and user == menu.user %}
-                        <a href="{% url 'menu_item_create' menu.slug %}" class="text-green-500 ml-4">Add Item</a>
+                        <a href="{% url 'menu_item_create' menu.slug %}"
+                           class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 ml-4">Add
+                            Item</a>
                     {% endif %}
                 </div>
                 <ul>
                     {% for item in menu_items_without_category %}
-                        <li class="border-b py-2">
+                        <li class="border-b py-2 hover:bg-[#f8f8f8] transition duration-300">
                             <div class="flex items-center">
                                 {% if item.photo %}
-                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4" loading="lazy">
+                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}"
+                                         class="w-16 h-16 mr-4 rounded-full shadow-md" loading="lazy">
                                 {% endif %}
                                 <div>
-                                    <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-                                    <p>{{ item.description }}</p>
+                                    <p class="font-semibold text-[#4a4e69]">{{ item.name }} - ${{ item.price }}</p>
+                                    <p class="text-[#6b7280]">{{ item.description }}</p>
                                     <!-- Edit and Delete Buttons for Menu Items -->
                                     {% if user.is_authenticated and user == menu.user %}
                                         <a href="{% url 'menu_item_update' menu.slug item.id %}"
-                                           class="text-blue-500 mr-2">Edit</a>
-                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="text-red-500">Delete</a>
+                                           class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 mr-2">Edit</a>
+                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}"
+                                           class="bg-[#c56c86] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">Delete</a>
                                     {% endif %}
                                 </div>
                             </div>
                         </li>
                     {% empty %}
-                        <li>No items in the "Other" category.</li>
+                        <li class="text-[#6b7280]">No items in the "Other" category.</li>
                     {% endfor %}
                 </ul>
             </section>
@@ -122,27 +167,30 @@
         <section>
             <ul>
                 {% for item in menu.menu_items.all %}
-                    <li class="border-b py-2">
+                    <li class="border-b py-2 hover:bg-[#f8f8f8] transition duration-300">
                         <div class="flex items-center">
                             {% if item.photo %}
-                                <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="w-16 h-16 mr-4" loading="lazy">
+                                <img src="{{ item.photo.url }}" alt="{{ item.name }}"
+                                     class="w-16 h-16 mr-4 rounded-full shadow-md" loading="lazy">
                             {% endif %}
                             <div>
-                                <p class="font-semibold">{{ item.name }} - ${{ item.price }}</p>
-                                <p>{{ item.description }}</p>
+                                <p class="font-semibold text-[#4a4e69]">{{ item.name }} - ${{ item.price }}</p>
+                                <p class="text-[#6b7280]">{{ item.description }}</p>
                                 <!-- Edit and Delete Buttons for Menu Items -->
                                 {% if user.is_authenticated and user == menu.user %}
-                                    <a href="{% url 'menu_item_update' menu.slug item.id %}" class="text-blue-500 mr-2">Edit</a>
+                                    <a href="{% url 'menu_item_update' menu.slug item.id %}"
+                                       class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 mr-2">Edit</a>
                                     <a href="{% url 'menu_item_delete' menu.slug item.id %}"
-                                       class="text-red-500">Delete</a>
+                                       class="bg-[#c56c86] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">Delete</a>
                                 {% endif %}
                             </div>
                         </div>
                     </li>
                 {% empty %}
-                    <li>No items in this menu.</li>
+                    <li class="text-[#6b7280]">No items in this menu.</li>
                 {% endfor %}
             </ul>
         </section>
     {% endif %}
+    </div>
 {% endblock %}
