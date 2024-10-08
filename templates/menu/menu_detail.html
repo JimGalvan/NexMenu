@@ -1,62 +1,15 @@
 {% extends 'menu/base.html' %}
+
+{% block container_styles %}
+    bg-[#ffffff] rounded-lg shadow-md my-6 mx-auto p-6 sm:p-8 w-full md:w-3/4 lg:w-2/3
+{% endblock %}
+
+{% block floating_bar %}
+    {% include 'menu/menu_options_bar.html' %}
+{% endblock %}
+
 {% block content %}
-
-    <style>
-        .menu-detail .floating-bar {
-            position: relative;
-        {#align-content: center;#} padding: 1rem;
-            margin: 1rem;
-            transition: top 0.3s;
-            background-color: rgba(34, 34, 34, 62%); /* Dark gray with transparency */
-        {#display: flex;#} justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .menu-detail .floating-bar.fixed {
-            position: fixed;
-            z-index: 1000;
-        }
-    </style>
-
-    <script>
-        window.addEventListener('scroll', function () {
-            var floatingBar = document.getElementById('floating-bar-container');
-            if (window.scrollY > 100) { // Adjust the scroll position as needed
-                floatingBar.classList.add('fixed');
-            } else {
-                floatingBar.classList.remove('fixed');
-            }
-        });
-    </script>
     <div class="menu-detail">
-
-    <!-- Management Buttons -->
-    {% if user.is_authenticated and user == menu.user %}
-        <div id="floating-bar-container" class="floating-bar rounded-lg">
-            <div class="flex flex-wrap gap-2">
-                <a href="{% url 'menu_update' menu.slug %}"
-                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Edit
-                    Menu</a>
-                <a href="{% url 'menu_delete' menu.slug %}"
-                   class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">Delete
-                    Menu</a>
-                <a href="{% url 'category_list' menu.slug %}"
-                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Manage
-                    Categories</a>
-                <a href="{% url 'category_create' menu.slug %}"
-                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Add
-                    Category</a>
-                <a href="{% url 'menu_item_list' menu.slug %}"
-                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Manage
-                    Menu Items</a>
-                <a href="{% url 'menu_item_create' menu.slug %}"
-                   class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Add
-                    Menu Item</a>
-            </div>
-        </div>
-    {% endif %}
-
         {% if menu.logo %}
             <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-32 h-32 mb-4 rounded-full shadow-lg"
                  loading="lazy">

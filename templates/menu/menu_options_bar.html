@@ -1,0 +1,78 @@
+<style>
+    :root {
+        --floating-bar-bg: rgba(34, 34, 34, 62%);
+        --floating-bar-padding: 0.5rem;
+        --floating-bar-margin: 16%;
+        --floating-bar-top: 1rem;
+        --transition-duration: 0.3s;
+    }
+
+    .floating-bar {
+        padding: var(--floating-bar-padding);
+        transition: top var(--transition-duration);
+        background-color: var(--floating-bar-bg);
+        justify-content: center;
+        margin-top: var(--floating-bar-top);
+        margin-left: var(--floating-bar-margin);
+        margin-right: var(--floating-bar-margin);
+        align-items: center;
+    }
+
+    .test {
+        position: fixed;
+        left: var(--floating-bar-margin);
+        right: var(--floating-bar-margin);
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<script>
+    window.addEventListener('scroll', function () {
+        var floatingBar = document.getElementById('floating-bar-container');
+        if (window.scrollY > 100) { // Adjust the scroll position as needed
+            console.log('Fixed');
+            floatingBar.classList.add('test');
+        } else {
+            floatingBar.classList.remove('test');
+        }
+    });
+</script>
+
+<!-- Management Buttons -->
+{% if user.is_authenticated and user == menu.user %}
+    <div x-data="{ expanded: true }">
+        <div id="floating-bar-container" class="floating-bar rounded-lg">
+            <button @click="expanded = true"
+                    x-show="!expanded"
+                    class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 mb-2">
+                <span x-show="!expanded">Options</span>
+            </button>
+            <div class="flex flex-wrap gap-2" x-show="expanded">
+                <button @click="expanded = !expanded"
+                        class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 mb-2">
+                    <span x-show="!expanded">Options</span>
+                    <span x-show="expanded">Hide Options</span>
+                </button>
+                <a href="{% url 'menu_update' menu.slug %}"
+                   class="bg-[#4a4e69] mb-2 text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Edit
+                    Menu</a>
+                <a href="{% url 'category_list' menu.slug %}"
+                   class="bg-[#4a4e69] mb-2 text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Manage
+                    Categories</a>
+                <a href="{% url 'category_create' menu.slug %}"
+                   class="bg-[#4a4e69] mb-2 text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Add
+                    Category</a>
+                <a href="{% url 'menu_item_list' menu.slug %}"
+                   class="bg-[#4a4e69] mb-2 text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Manage
+                    Menu Items</a>
+                <a href="{% url 'menu_item_create' menu.slug %}"
+                   class="bg-[#4a4e69] mb-2 text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">Add
+                    Menu Item</a>
+                <a href="{% url 'menu_delete' menu.slug %}"
+                   class="bg-[#c56c86] mb-2  text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">Delete
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
