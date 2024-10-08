@@ -1,8 +1,14 @@
 {% extends 'menu/base.html' %}
 
 {% block content %}
-<h1 class="text-2xl font-bold text-[#22224b] mb-4">Categories for "{{ menu.name }}"</h1>
-<a href="{% url 'category_create' menu.slug %}" class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Create New Category</a>
+    <h1 class="text-2xl font-bold text-[#22224b] mb-4">
+        Categories for
+        <a href="{% url 'menu_detail' menu.slug %}" class="text-[#4a4e69] hover:text-[#22224b]">
+            "{{ menu.name }}"
+        </a>
+    </h1>
+    <a href="{% url 'category_create' menu.slug %}"
+       class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Create New Category</a>
 <ul class="mt-4">
     {% for category in categories %}
     <li class="border-b py-2 flex justify-between">
