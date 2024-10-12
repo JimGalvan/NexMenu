@@ -1,0 +1,26 @@
+<li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative flex items-center space-x-4">
+    {% if item.photo %}
+        <img src="{{ item.photo.url }}" alt="{{ item.name }}"
+             class="w-32 h-32 rounded-lg shadow-md" loading="lazy">
+    {% endif %}
+    <div class="flex-1">
+        <p class="font-semibold text-[#4a4e69] text-lg">{{ item.name }}</p>
+        <p class="text-[#6b7280] mt-1">{{ item.description }}</p>
+        <p class="text-[#4a4e69] font-medium mt-2">${{ item.price }}</p>
+    </div>
+    {% if user.is_authenticated and user == menu.user %}
+        <div x-data="{ showOptions: false }" class="absolute top-2 right-2">
+            <button @click="showOptions = !showOptions"
+                    class="bg-[#6b7280] text-white text-sm px-3 py-1 rounded-lg shadow-md hover:bg-[#4a4e69] transition duration-300">
+                Options
+            </button>
+            <div x-show="showOptions" @click.away="showOptions = false"
+                 class="absolute bg-white border rounded-lg shadow-lg mt-2 py-2 w-48 z-10">
+                <a href="{% url 'menu_item_update' menu.slug item.id %}"
+                   class="block px-4 py-2 text-[#4a4e69] hover:bg-[#f8f8f8] transition duration-300">Edit</a>
+                <a href="{% url 'menu_item_delete' menu.slug item.id %}"
+                   class="block px-4 py-2 text-[#c56c86] hover:bg-[#f8f8f8] transition duration-300">Delete</a>
+            </div>
+        </div>
+    {% endif %}
+</li>

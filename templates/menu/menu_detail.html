@@ -10,12 +10,13 @@
 
 {% block content %}
     <div class="menu-detail">
-        {% if menu.logo %}
-            <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-40 h-40 mb-4 rounded-full shadow-lg"
-                 loading="lazy">
-        {% endif %}
-        <h1 class="text-3xl font-bold text-[#4a4e69] mb-6">{{ menu.name }}</h1>
-
+        <div class="flex items-center mb-6">
+            {% if menu.logo %}
+                <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-40 h-40 rounded-full shadow-lg mr-4"
+                     loading="lazy">
+            {% endif %}
+            <h1 class="text-3xl font-bold text-[#4a4e69]">{{ menu.name }}</h1>
+        </div>
         {% if categories %}
             <!-- Navigation -->
             <nav class="mb-6">
@@ -37,58 +38,7 @@
 
             <!-- Categories and Items -->
             {% for category in categories %}
-                <section id="{{ category.id }}" class="mt-8">
-                    <div class="flex items-center mb-4">
-                        <h2 class="text-xl font-semibold text-[#4a4e69]">{{ category.name }}</h2>
-                        {% if user.is_authenticated and user == menu.user %}
-                            <div x-data="{ showOptions: false }" class="relative">
-                                <button @click="showOptions = !showOptions"
-                                        class="bg-[#4a4e69] text-white px-2 py-1 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300 ml-4">
-                                    Options
-                                </button>
-                                <div x-show="showOptions" @click.away="showOptions = false"
-                                     class="absolute bg-white border rounded-lg shadow-lg mt-2 py-2 w-48 z-10">
-                                    <a href="{% url 'category_update' menu.slug category.id %}"
-                                       class="block px-4 py-2 text-[#4a4e69] hover:bg-[#f8f8f8] transition duration-300">Edit</a>
-                                    <a href="{% url 'menu_item_create' menu.slug %}?category={{ category.id }}"
-                                       class="block px-4 py-2 text-[#4a4e69] hover:bg-[#f8f8f8] transition duration-300">Add
-                                        Item</a>
-                                    <a href="{% url 'category_delete' menu.slug category.id %}"
-                                       class="block px-4 py-2 text-[#c56c86] hover:bg-[#f8f8f8] transition duration-300">Delete</a>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {% for item in category.menu_items.all %}
-                            <li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative">
-                                {% if item.photo %}
-                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}"
-                                         class="w-24 h-24 rounded-lg shadow-md mb-2" loading="lazy">
-                                {% endif %}
-                                <p class="font-semibold text-[#4a4e69]">{{ item.name }} - ${{ item.price }}</p>
-                                <p class="text-[#6b7280]">{{ item.description }}</p>
-                                {% if user.is_authenticated and user == menu.user %}
-                                    <div x-data="{ showOptions: false }" class="absolute top-2 right-2">
-                                        <button @click="showOptions = !showOptions"
-                                                class="bg-[#6b7280] text-white text-sm px-2 py-1 rounded-lg shadow-md hover:bg-[#4a4e69] transition duration-300">
-                                            Options
-                                        </button>
-                                        <div x-show="showOptions" @click.away="showOptions = false"
-                                             class="absolute bg-white border rounded-lg shadow-lg mt-2 py-2 w-48 z-10">
-                                            <a href="{% url 'menu_item_update' menu.slug item.id %}"
-                                               class="block px-4 py-2 text-[#4a4e69] hover:bg-[#f8f8f8] transition duration-300">Edit</a>
-                                            <a href="{% url 'menu_item_delete' menu.slug item.id %}"
-                                               class="block px-4 py-2 text-[#c56c86] hover:bg-[#f8f8f8] transition duration-300">Delete</a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </li>
-                        {% empty %}
-                            <li class="text-[#6b7280]">No items in this category.</li>
-                        {% endfor %}
-                    </ul>
-                </section>
+                {% include 'menu/category.html' %}
             {% endfor %}
 
             {% if menu_items_without_category %}
@@ -103,29 +53,7 @@
                     </div>
                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {% for item in menu_items_without_category %}
-                            <li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative">
-                                {% if item.photo %}
-                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}"
-                                         class="w-24 h-24 rounded-lg shadow-md mb-2" loading="lazy">
-                                {% endif %}
-                                <p class="font-semibold text-[#4a4e69]">{{ item.name }} - ${{ item.price }}</p>
-                                <p class="text-[#6b7280]">{{ item.description }}</p>
-                                {% if user.is_authenticated and user == menu.user %}
-                                    <div x-data="{ showOptions: false }" class="absolute top-2 right-2">
-                                        <button @click="showOptions = !showOptions"
-                                                class="bg-[#6b7280] text-white text-sm px-2 py-1 rounded-lg shadow-md hover:bg-[#4a4e69] transition duration-300">
-                                            Options
-                                        </button>
-                                        <div x-show="showOptions" @click.away="showOptions = false"
-                                             class="absolute bg-white border rounded-lg shadow-lg mt-2 py-2 w-48 z-10">
-                                            <a href="{% url 'menu_item_update' menu.slug item.id %}"
-                                               class="block px-4 py-2 text-[#4a4e69] hover:bg-[#f8f8f8] transition duration-300">Edit</a>
-                                            <a href="{% url 'menu_item_delete' menu.slug item.id %}"
-                                               class="block px-4 py-2 text-[#c56c86] hover:bg-[#f8f8f8] transition duration-300">Delete</a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </li>
+                            {% include 'menu/menu_item.html' %}
                         {% empty %}
                             <li class="text-[#6b7280]">No items in the "Other" category.</li>
                         {% endfor %}
@@ -137,30 +65,7 @@
             <section>
                 <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {% for item in menu.menu_items.all %}
-                        <li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative">
-                            {% if item.photo %}
-                                <img src="{{ item.photo.url }}" alt="{{ item.name }}"
-                                     class="w-24 h-24 rounded-lg shadow-md mb-2" loading="lazy">
-                            {% endif %}
-                            <p class="font-semibold text-[#4a4e69]">{{ item.name }} - ${{ item.price }}</p>
-                            <p class="text-[#6b7280]">{{ item.description }}</p>
-                            {% if user.is_authenticated and user == menu.user %}
-                                <div x-data="{ showOptions: false }" class="absolute top-2 right-2">
-                                    <button @click="showOptions = !showOptions"
-                                            class="bg-[#6b7280] text-white text-sm px-2 py-1 rounded-lg shadow-md hover:bg-[#4a4e69] transition duration-300">
-                                        Options
-                                    </button>
-                                    <div x-show="showOptions" @click.away="showOptions = false"
-                                         class="absolute bg-white border rounded-lg shadow-lg mt-2 py-2 w-48 z-10">
-                                        <a href="{% url 'menu_item_update'
-                                        menu.slug item.id %}"
-                                           class="block px-4 py-2 text-[#4a4e69] hover:bg-[#f8f8f8] transition duration-300">Edit</a>
-                                        <a href="{% url 'menu_item_delete' menu.slug item.id %}"
-                                           class="block px-4 py-2 text-[#c56c86] hover:bg-[#f8f8f8] transition duration-300">Delete</a>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </li>
+                        {% include 'menu/menu_item.html' %}
                     {% empty %}
                         <li class="text-[#6b7280]">No items in this menu.</li>
                     {% endfor %}
