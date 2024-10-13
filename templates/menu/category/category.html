@@ -22,7 +22,7 @@
     </div>
     <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {% for item in category.menu_items.all %}
-            {% include 'menu/menu_item.html' %}
+            {% include 'menu/menu_item/menu_item.html' %}
         {% empty %}
             <li class="text-[#6b7280]">No items in this category.</li>
         {% endfor %}

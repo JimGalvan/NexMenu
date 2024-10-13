@@ -1,4 +1,4 @@
-{% extends 'menu/base.html' %}
+{% extends 'menu/../base.html' %}
 
 {% block container_styles %}
     bg-[#ffffff] rounded-lg shadow-md my-6 mx-auto p-6 sm:p-8 w-full md:w-3/4 lg:w-2/3
@@ -38,7 +38,7 @@
 
             <!-- Categories and Items -->
             {% for category in categories %}
-                {% include 'menu/category.html' %}
+                {% include 'menu/category/category.html' %}
             {% endfor %}
 
             {% if menu_items_without_category %}
@@ -53,7 +53,7 @@
                     </div>
                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {% for item in menu_items_without_category %}
-                            {% include 'menu/menu_item.html' %}
+                            {% include 'menu/menu_item/menu_item.html' %}
                         {% empty %}
                             <li class="text-[#6b7280]">No items in the "Other" category.</li>
                         {% endfor %}
@@ -65,7 +65,7 @@
             <section>
                 <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {% for item in menu.menu_items.all %}
-                        {% include 'menu/menu_item.html' %}
+                        {% include 'menu/menu_item/menu_item.html' %}
                     {% empty %}
                         <li class="text-[#6b7280]">No items in this menu.</li>
                     {% endfor %}

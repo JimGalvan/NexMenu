@@ -10,7 +10,7 @@ from .models import Menu, MenuItem, Category
 def home(request):
     if request.user.is_authenticated:
         return redirect('menu_list')
-    return render(request, 'menu/home.html')
+    return render(request, 'menu/../templates/home.html')
 
 
 @login_required
@@ -82,7 +82,7 @@ def admin_dashboard(request):
     page_number = request.GET.get('page')
     menu_items = paginator.get_page(page_number)
 
-    return render(request, 'menu/admin_dashboard.html', {'menu_items': menu_items, 'query': query})
+    return render(request, 'menu/../templates/admin_dashboard.html', {'menu_items': menu_items, 'query': query})
 
 
 @login_required
@@ -91,7 +91,7 @@ def menu_item_list(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     # Get all MenuItems associated with this menu
     menu_items = menu.menu_items.all()
-    return render(request, 'menu/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
+    return render(request, 'menu/menu_item/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
 
 
 @login_required
@@ -114,14 +114,14 @@ def menu_item_create(request, slug):
     else:
         form = MenuItemForm(menu=menu, initial=initial_data)
     is_update: bool = False
-    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
+    return render(request, 'menu/menu_item/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
 
 
 @login_required
 def menu_item_detail(request, slug, menu_item_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
-    return render(request, 'menu/menu_item_detail.html', {'menu': menu, 'menu_item': menu_item})
+    return render(request, 'menu/menu_item/menu_item_detail.html', {'menu': menu, 'menu_item': menu_item})
 
 
 @login_required
@@ -136,7 +136,7 @@ def menu_item_update(request, slug, menu_item_id):
     else:
         form = MenuItemForm(instance=menu_item, menu=menu)
     is_update: bool = True
-    return render(request, 'menu/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
+    return render(request, 'menu/menu_item/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
 
 
 @login_required
@@ -150,14 +150,14 @@ def menu_item_delete(request, slug, menu_item_id):
         if menu_item.menus.count() == 0:
             menu_item.delete()
         return redirect('menu_item_list', slug=menu.slug)
-    return render(request, 'menu/menu_item_confirm_delete.html', {'menu': menu, 'menu_item': menu_item})
+    return render(request, 'menu/menu_item/menu_item_confirm_delete.html', {'menu': menu, 'menu_item': menu_item})
 
 
 @login_required
 def category_list(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     categories = menu.categories.all()
-    return render(request, 'menu/category_list.html', {'menu': menu, 'categories': categories})
+    return render(request, 'menu/category/category_list.html', {'menu': menu, 'categories': categories})
 
 
 @login_required
@@ -172,7 +172,7 @@ def category_create(request, slug):
             return redirect('category_list', slug=menu.slug)
     else:
         form = CategoryForm()
-    return render(request, 'menu/category_form.html', {'form': form, 'menu': menu})
+    return render(request, 'menu/category/category_form.html', {'form': form, 'menu': menu})
 
 
 @login_required
@@ -181,7 +181,7 @@ def category_detail(request, slug, category_id):
     category = get_object_or_404(Category, id=category_id, menus=menu)
     # Get MenuItems in this Category and associated with the Menu
     menu_items = category.menu_items.filter(menus=menu)
-    return render(request, 'menu/category_detail.html', {'menu': menu, 'category': category, 'menu_items': menu_items})
+    return render(request, 'menu/category/category_detail.html', {'menu': menu, 'category': category, 'menu_items': menu_items})
 
 
 @login_required
@@ -195,7 +195,7 @@ def category_update(request, slug, category_id):
             return redirect('category_list', slug=menu.slug)
     else:
         form = CategoryForm(instance=category)
-    return render(request, 'menu/category_form.html', {'form': form, 'menu': menu})
+    return render(request, 'menu/category/category_form.html', {'form': form, 'menu': menu})
 
 
 @login_required
@@ -209,5 +209,5 @@ def category_delete(request, slug, category_id):
         if category.menus.count() == 0:
             category.delete()
         return redirect('category_list', slug=menu.slug)
-    return render(request, 'menu/category_confirm_delete.html', {'menu': menu, 'category': category})
+    return render(request, 'menu/category/category_confirm_delete.html', {'menu': menu, 'category': category})
 

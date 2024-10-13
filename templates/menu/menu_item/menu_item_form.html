@@ -1,15 +1,15 @@
-{% extends 'menu/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <h1 class="text-2xl font-bold text-[#22224b] mb-4">
-    {% if form.instance.pk %}
-        Update Category for "{{ menu.name }}"
+    {% if is_update %}
+        Update Menu Item for "{{ menu.name }}"
     {% else %}
-        Create New Category for "{{ menu.name }}"
+        Create New Menu Item for "{{ menu.name }}"
     {% endif %}
 </h1>
 
-    <form method="post" class="bg-[#F2e9e4] shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form method="post" enctype="multipart/form-data" class="bg-[#F2e9e4] shadow-md rounded px-8 pt-6 pb-8 mb-4">
     {% csrf_token %}
     {% for field in form %}
         <div class="mb-4">
@@ -30,16 +30,14 @@
     <div class="flex items-center justify-between">
         <button type="submit"
                 class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded-lg focus:outline-none">
-            {% if form.instance.pk %}
-                Update Category
+            {% if is_update %}
+                Update Menu Item
             {% else %}
-                Create Category
+                Create Menu Item
             {% endif %}
         </button>
-        <a href="{% url 'category_list' menu.slug %}"
-           class="inline-block align-baseline font-bold text-sm text-[#4a4e69] hover:text-[#22224b]">
-            Cancel
-        </a>
+        <a href="{% url 'menu_item_list' menu.slug %}"
+           class="inline-block align-baseline font-bold text-sm text-[#4a4e69] hover:text-[#22224b]">Cancel</a>
     </div>
 </form>
 {% endblock %}
