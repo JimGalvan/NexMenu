@@ -10,7 +10,7 @@
     <script src="https://unpkg.com/htmx.org@latest/dist/ext/alpine-morph.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
         @layer components {
             .btn-primary {
@@ -40,7 +40,22 @@
 
         /* Adding more modern touch with better font styles */
         body {
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #f9fafb;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+            border-color: #4a4e69;
+            box-shadow: 0 0 0 3px rgba(74, 78, 105, 0.2);
+            outline: none;
         }
     </style>
 </head>
