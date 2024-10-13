@@ -1,0 +1,25 @@
+<li class="bg-[#f8f8f8] border border-[#d1d5db] rounded-lg mb-4 p-4 flex items-center justify-between hover:bg-[#e5e5e5] hover:shadow-lg transition duration-300">
+    <div class="flex items-center">
+        {% if menu.logo %}
+            <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo"
+                 class="w-16 h-16 rounded-full mr-4 shadow-md" loading="lazy">
+        {% endif %}
+        <div>
+            <a href="{% url 'menu_detail' menu.slug %}"
+               class="text-xl font-semibold text-[#4a4e69] hover:text-[#22224b] transition duration-300">{{ menu.name }}</a>
+            <p class="text-[#6b7280]">{{ menu.description }}</p>
+        </div>
+    </div>
+    <div class="flex space-x-2">
+        <!-- 'Edit' Button -->
+        <a href="{% url 'menu_update' menu.slug %}"
+           class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">
+            Edit
+        </a>
+        <!-- 'Delete' Button -->
+        <a href="{% url 'menu_delete' menu.slug %}"
+           class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">
+            Delete
+        </a>
+    </div>
+</li>
