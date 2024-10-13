@@ -19,22 +19,7 @@
         </div>
         {% if categories %}
             <!-- Navigation -->
-            <nav class="mb-6">
-                <ul class="flex space-x-4">
-                    {% for category in categories %}
-                        <li>
-                            <a href="#{{ category.id }}"
-                               class="text-[#4a4e69] hover:text-[#22224b] transition duration-300">{{ category.name }}</a>
-                        </li>
-                    {% endfor %}
-                    {% if menu_items_without_category %}
-                        <li>
-                            <a href="#other"
-                               class="text-[#4a4e69] hover:text-[#22224b] transition duration-300">Other</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
+            {% include 'menu/menu_detail_nav.html' %}
 
             <!-- Categories and Items -->
             {% for category in categories %}

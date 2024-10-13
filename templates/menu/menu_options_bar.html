@@ -19,7 +19,7 @@
         align-items: center;
     }
 
-    .test {
+    .floating-bar.fixed {
         position: fixed;
         left: var(--floating-bar-margin);
         right: var(--floating-bar-margin);
@@ -32,10 +32,9 @@
     window.addEventListener('scroll', function () {
         var floatingBar = document.getElementById('floating-bar-container');
         if (window.scrollY > 100) { // Adjust the scroll position as needed
-            console.log('Fixed');
-            floatingBar.classList.add('test');
+            floatingBar.classList.add('fixed');
         } else {
-            floatingBar.classList.remove('test');
+            floatingBar.classList.remove('fixed');
         }
     });
 </script>

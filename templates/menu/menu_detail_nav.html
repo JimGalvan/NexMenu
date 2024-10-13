@@ -1,0 +1,123 @@
+<!-- Alpine.js Component Script -->
+<script>
+    function navigationMenu() {
+        return {
+            items: [
+                // Replace this with your categories from the backend
+                {% for category in categories %}
+                    {id: '{{ category.id }}', name: '{{ category.name }}'},
+                {% endfor %}
+                {% if menu_items_without_category %}
+                    {id: 'other', name: 'Other'},
+                {% endif %}
+            ],
+            visibleItems: [],
+            moreItems: [],
+            showMoreMenu: false,  // Track the visibility of the "More" dropdown
+            menuWidth: null,  // Store the width of the parent navMenu
+            init() {
+                this.updateMenu();
+                window.addEventListener('resize', () => {
+                    this.updateMenu();
+                    this.setDropdownWidth();  // Ensure dropdown resizes with window
+                });
+            },
+            updateMenu() {
+                const isMobile = window.innerWidth < 640; // Adjust breakpoint as needed
+                if (isMobile) {
+                    // Move all items to "More" dropdown
+                    this.visibleItems = [];
+                    this.moreItems = this.items;
+                } else {
+                    // Display all items
+                    this.visibleItems = this.items;
+                    this.moreItems = [];
+                }
+            },
+            toggleMoreMenu() {
+                this.showMoreMenu = !this.showMoreMenu;
+                if (this.showMoreMenu) {
+                    this.setDropdownWidth();  // Set dropdown width when menu is opened
+                }
+            },
+            setDropdownWidth() {
+                const navMenuElement = document.getElementById('navMenu');
+                if (navMenuElement) {
+                    this.menuWidth = navMenuElement.offsetWidth + 'px';  // Get the width of navMenu
+                }
+            },
+            hideDropdown() {
+                this.showMoreMenu = false;
+            }
+        };
+    }
+</script>
+
+<!-- CSS Styling -->
+<style>
+    nav {
+        z-index: 4000;
+    }
+
+    #moreMenu ul {
+        display: none;
+    }
+
+    #moreMenu:hover ul {
+        display: block;
+    }
+
+    #moreMenu ul li {
+        padding: 8px 16px;
+    }
+
+    #moreMenu ul li a {
+        display: block;
+        width: 100%;
+    }
+
+    #moreMenu ul li a:hover {
+        background-color: #4a5568; /* Tailwind's gray-700 */
+    }
+</style>
+
+<!-- Navigation -->
+<nav x-data="navigationMenu()" class="sticky top-1 mb-6 bg-gray-700 p-4 rounded-lg shadow-md">
+    <ul id="navMenu" class="flex flex-wrap items-center space-x-4">
+        <!-- Visible Categories -->
+        <template x-for="item in visibleItems" :key="item.id">
+            <li class="nav-item">
+                <a :href="'#' + item.id"
+                   class="text-gray-300 hover:text-white transition duration-300"
+                   x-text="item.name"></a>
+            </li>
+        </template>
+        <!-- "More" Dropdown -->
+        <li id="moreMenu" class="relative ml-auto" x-show="moreItems.length > 0">
+            <!-- ml-auto pushes the button to the right -->
+            <button
+                    @click="toggleMoreMenu"
+                    class="text-gray-300 hover:text-white transition duration-300 focus:outline-none">
+                Categories ▼
+            </button>
+            <!-- Toggle visibility of the dropdown menu using x-show -->
+            <ul
+                    x-show="showMoreMenu"
+                    id="moreMenuDropdown"
+                    :style="{ width: menuWidth }"
+                    class="absolute left-0 mt-2 bg-gray-800 rounded shadow-lg overflow-hidden"
+                    @click.away="showMoreMenu = false"
+                    x-transition
+            >
+                <template x-for="item in moreItems" :key="item.id">
+                    <li>
+                        <a :href="'#' + item.id"
+                           class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg w-full"
+                           x-text="item.name"
+                           @click="hideDropdown"></a> <!-- Hide the dropdown when a category is clicked -->
+                    </li>
+                </template>
+            </ul>
+        </li>
+    </ul>
+</nav>
