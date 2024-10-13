@@ -1,0 +1,25 @@
+<style>
+    .menu-header {
+        padding: 1rem;
+        background-color: #e5e7eb;
+    }
+
+    .menu-title {
+        margin-left: 1rem;
+        font-size: 2rem;
+        color: #4a4e69;
+    }
+
+    .menu-logo {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
+</style>
+<div class="menu-header flex items-center p-4 bg-[#f3f4f6]">
+    {% if menu.logo %}
+        <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo"
+             class="menu-logo w-40 h-40 rounded-full shadow-lg mr-4" loading="lazy">
+    {% endif %}
+    <h1 class="menu-title text-3xl font-bold text-[#4a4e69]">{{ menu.name }}</h1>
+</div>

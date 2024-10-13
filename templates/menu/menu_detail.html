@@ -1,7 +1,7 @@
 {% extends 'menu/../base.html' %}
 
 {% block container_styles %}
-    bg-[#ffffff] rounded-lg shadow-md my-6 mx-auto p-6 sm:p-8 w-full md:w-3/4 lg:w-2/3
+    bg-[#ffffff] shadow-md mx-auto w-full md:w-3/4 lg:w-2/3 my-6 rounded-lg
 {% endblock %}
 
 {% block floating_bar %}
@@ -10,17 +10,12 @@
 
 {% block content %}
     <div class="menu-detail">
-        <div class="flex items-center mb-6">
-            {% if menu.logo %}
-                <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo" class="w-40 h-40 rounded-full shadow-lg mr-4"
-                     loading="lazy">
-            {% endif %}
-            <h1 class="text-3xl font-bold text-[#4a4e69]">{{ menu.name }}</h1>
-        </div>
+        {% include 'menu/menu_detail_header.html' %}
         {% if categories %}
             <!-- Navigation -->
             {% include 'menu/menu_detail_nav.html' %}
 
+            <div class="p-6">
             <!-- Categories and Items -->
             {% for category in categories %}
                 {% include 'menu/category/category.html' %}
@@ -45,9 +40,10 @@
                     </ul>
                 </section>
             {% endif %}
+            </div>
         {% else %}
             <!-- No Categories -->
-            <section>
+            <section class="p-6">
                 <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {% for item in menu.menu_items.all %}
                         {% include 'menu/menu_item/menu_item.html' %}

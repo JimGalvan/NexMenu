@@ -82,7 +82,11 @@
 </style>
 
 <!-- Navigation -->
-<nav x-data="navigationMenu()" class="sticky top-1 mb-6 bg-gray-700 p-4 rounded-lg shadow-md">
+{% if not user.is_authenticated %}
+    <nav x-data="navigationMenu()" class="sticky top-0 mb-6 bg-gray-700 p-4 shadow-md">
+{% else %}
+    <nav x-data="navigationMenu()" class="top-0 mb-6 bg-gray-700 p-4 shadow-md">
+{% endif %}
     <ul id="navMenu" class="flex flex-wrap items-center space-x-4">
         <!-- Visible Categories -->
         <template x-for="item in visibleItems" :key="item.id">
