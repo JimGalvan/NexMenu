@@ -10,7 +10,7 @@ from .models import Menu, MenuItem, Category
 def home(request):
     if request.user.is_authenticated:
         return redirect('menu_list')
-    return render(request, 'menu/../templates/home.html')
+    return render(request, 'home.html')
 
 
 @login_required
@@ -82,7 +82,7 @@ def admin_dashboard(request):
     page_number = request.GET.get('page')
     menu_items = paginator.get_page(page_number)
 
-    return render(request, 'menu/../templates/admin_dashboard.html', {'menu_items': menu_items, 'query': query})
+    return render(request, 'admin_dashboard.html', {'menu_items': menu_items, 'query': query})
 
 
 @login_required
@@ -195,7 +195,9 @@ def category_update(request, slug, category_id):
             return redirect('category_list', slug=menu.slug)
     else:
         form = CategoryForm(instance=category)
-    return render(request, 'menu/category/category_form.html', {'form': form, 'menu': menu})
+
+    is_update: bool = True
+    return render(request, 'menu/category/category_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
 
 
 @login_required

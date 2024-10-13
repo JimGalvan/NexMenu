@@ -2,14 +2,14 @@
 
 {% block content %}
     <h1 class="text-2xl font-bold text-[#22224b] mb-4">
-    {% if form.instance.pk %}
+        {% if is_update %}
         Update Category for "{{ menu.name }}"
     {% else %}
         Create New Category for "{{ menu.name }}"
     {% endif %}
 </h1>
 
-    <form method="post" class="bg-[#F2e9e4] shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form method="post">
     {% csrf_token %}
     {% for field in form %}
         <div class="mb-4">
@@ -29,15 +29,15 @@
     {% endfor %}
     <div class="flex items-center justify-between">
         <button type="submit"
-                class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded-lg focus:outline-none">
-            {% if form.instance.pk %}
+                class="btn-primary">
+            {% if is_update %}
                 Update Category
             {% else %}
                 Create Category
             {% endif %}
         </button>
         <a href="{% url 'category_list' menu.slug %}"
-           class="inline-block align-baseline font-bold text-sm text-[#4a4e69] hover:text-[#22224b]">
+           class="btn-cancel">
             Cancel
         </a>
     </div>

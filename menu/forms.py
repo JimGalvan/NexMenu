@@ -11,6 +11,7 @@ class MenuForm(forms.ModelForm):
         fields = ['name', 'description', 'logo', 'restaurant_name']
         widgets = {
             'logo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'description': forms.Textarea(attrs={'rows': 5}),
         }
 
 
