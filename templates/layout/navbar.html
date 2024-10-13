@@ -34,6 +34,11 @@
                    @click="selected = 'menus'; open = false"
                    class="block mb-2 transition-colors duration-300">My Menus</a>
 
+                <a href="{% url 'account_email' %}"
+                   :class="selected === 'account' ? 'text-white border-b-2 border-[#c9ada7]' : 'text-[#F2e9e4] hover:text-[#f0d9d8]'"
+                   @click="selected = 'account'; open = false"
+                   class="block mb-2 transition-colors duration-300">My Account</a>
+
                 <a href="{% url 'account_logout' %}"
                    :class="selected === 'logout' ? 'text-white border-b-2 border-[#c9ada7]' : 'text-[#F2e9e4] hover:text-[#f0d9d8]'"
                    @click="selected = 'logout'; open = false"

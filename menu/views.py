@@ -8,6 +8,8 @@ from .models import Menu, MenuItem, Category
 
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('menu_list')
     return render(request, 'menu/home.html')
 
 

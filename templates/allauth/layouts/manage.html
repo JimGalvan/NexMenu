@@ -11,6 +11,13 @@
                            href="{% url 'profile' %}">Profile</a>
                     </li>
                 {% endif %}
+                {% url 'menu_list' as menus_url_ %}
+                {% if menus_url_ %}
+                    <li class="nav-item">
+                        <a class="{% block nav_class_menus %}nav-link text-white{% endblock %}"
+                           href="{{ menus_url_ }}">View My Menus</a>
+                    </li>
+                {% endif %}
                 {% url 'account_email' as email_url_ %}
                 {% if email_url_ %}
                     <li class="nav-item">

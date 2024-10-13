@@ -1,7 +1,25 @@
-<!-- menu_app/templates/menu_app/home.html -->
-
 {% extends 'menu/base.html' %}
 
 {% block content %}
-<h1 class="text-3xl font-bold">Welcome to the Menu App</h1>
+    <div class="intro-container p-8 rounded-lg">
+        <h1 class="intro-title text-4xl font-bold text-center text-gray-800 mb-4">Welcome to the NexMenu</h1>
+        <p class="intro-text text-lg text-center text-gray-600 mb-6">Discover the amazing features of our app:</p>
+        <ul class="features-list list-disc list-inside text-gray-700 space-y-2">
+            <li>Create and manage your menus effortlessly</li>
+            <li>Add and categorize menu items</li>
+            <li>Customize your menu with ease</li>
+            <li>Share your menu with others</li>
+            <li>Edit your menus in real-time from an easy-to-use interface</li>
+            <li>Access your menus from any device, anywhere</li>
+            <li>Collaborate with others to build the perfect menu</li>
+        </ul>
+        <div class="text-center mt-6">
+            <a href="accounts/login" class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded">
+                Login
+            </a>
+            <a href="accounts/login" class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded ml-4">
+                Register
+            </a>
+        </div>
+    </div>
 {% endblock %}
