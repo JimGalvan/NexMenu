@@ -10,7 +10,18 @@
     <script src="https://unpkg.com/htmx.org@latest/dist/ext/alpine-morph.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @layer components {
+            .btn-primary {
+                @apply bg-[#4a4e69] hover:bg-[#22224b] text-white px-6 py-2 rounded-lg shadow-md transition duration-300;
+            }
 
+            .btn-cancel {
+                @apply bg-[#b5838d] hover:bg-[#6d6875] text-white px-6 py-2 rounded-lg shadow-md transition duration-300;
+            }
+        }
+    </style>
     <style>
         [x-cloak] {
             display: none;
@@ -29,7 +40,7 @@
 
         /* Adding more modern touch with better font styles */
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Ubuntu', sans-serif;
         }
     </style>
 </head>
