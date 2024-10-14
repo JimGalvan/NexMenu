@@ -8,8 +8,6 @@ from .base import *
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
-DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 print("DATABASE_URL: ", os.getenv('DATABASE_URL'))
