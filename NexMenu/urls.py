@@ -15,10 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.conf.urls.static import static
 from django.urls import path, include
-
-from NexMenu import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +23,3 @@ urlpatterns = [
     path('', include('menu.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
-
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
