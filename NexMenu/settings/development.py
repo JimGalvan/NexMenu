@@ -1,16 +1,18 @@
+import os
 import environ
-
 from .base import *
 
 DEBUG = True
 
-# Initialize environ
+ENVIRONMENT = 'development'
+
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False)
 )
 
-# SECRET_KEY = str(env('SECRET_KEY'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+SECRET_KEY = str(env('SECRET_KEY'))
 
 DATABASES = {
     'default': {

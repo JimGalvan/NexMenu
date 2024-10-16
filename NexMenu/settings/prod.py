@@ -10,6 +10,8 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 ALLOWED_HOSTS = ['*']
 
+ENVIRONMENT = 'production'
+
 print("DATABASE_URL: ", os.getenv('DATABASE_URL'))
 print("ENGINE: ", os.getenv('DB_ENGINE', default='django.db.backends.postgresql'))
 print("NAME: ", os.getenv('DB_NAME'))
