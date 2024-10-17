@@ -1,7 +1,9 @@
 # menu_app/urls.py
 
 from django.urls import path
+
 from . import views
+from .views import generate_presigned_url
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -21,6 +23,8 @@ urlpatterns = [
     path('menus/<slug:slug>/categories/<str:category_id>/', views.category_detail, name='category_detail'),
     path('menus/<slug:slug>/categories/<str:category_id>/update/', views.category_update, name='category_update'),
     path('menus/<slug:slug>/categories/<str:category_id>/delete/', views.category_delete, name='category_delete'),
+    path('menus/<slug:slug>/menu-items/<str:menu_item_id>/generate-presigned-url/', generate_presigned_url,
+         name='generate_presigned_url'),
 
     # Admin area
     path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),

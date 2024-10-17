@@ -1,6 +1,10 @@
+import boto3
+from botocore.exceptions import ClientError
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from .forms import MenuForm, MenuItemForm, CategoryForm
@@ -213,3 +217,25 @@ def category_delete(request, slug, category_id):
         return redirect('category_list', slug=menu.slug)
     return render(request, 'menu/category/category_confirm_delete.html', {'menu': menu, 'category': category})
 
+
+def generate_presigned_url(request):
+    menu_id = request.GET.get('menu_id')
+    menu_item_id = request.GET.get('menu_item_id')
+
+    object_name = f"menus/{menu_id}/menu_items/{menu_item_id}/photo.jpg"
+    s3_client = boto3.client('s3',
+                             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                             region_name=settings.AWS_S3_REGION_NAME)
+
+    try:
+        # Generate a presigned URL for file upload
+        response = s3_client.generate_presigned_url(
+            'put_object',
+            Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME, 'Key': object_name},
+            ExpiresIn=3600  # URL expires in 1 hour
+        )
+    except ClientError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'url': response})
