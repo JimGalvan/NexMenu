@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_http_methods
 
 from .forms import MenuForm, MenuItemForm, CategoryForm
 from .models import Menu, MenuItem, Category
@@ -18,12 +19,14 @@ def home(request):
 
 
 @login_required
+@require_http_methods(["GET"])
 def menu_list(request):
     menus = Menu.objects.filter(user=request.user)
     return render(request, 'menu/menu_list.html', {'menus': menus})
 
 
 @login_required
+@require_http_methods(["PUT", "POST", "GET"])
 def menu_create(request):
     if request.method == 'POST':
         form = MenuForm(request.POST, request.FILES)
@@ -38,6 +41,8 @@ def menu_create(request):
     return render(request, 'menu/menu_form.html', {'form': form, 'is_update': is_update})
 
 
+@login_required
+@require_http_methods(["GET"])
 def menu_detail(request, slug):
     menu = get_object_or_404(Menu, slug=slug)
     categories = menu.categories.all()
@@ -51,6 +56,7 @@ def menu_detail(request, slug):
 
 
 @login_required
+@require_http_methods(["PUT", "POST", "GET"])
 def menu_update(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     if request.method == 'POST':
@@ -65,6 +71,7 @@ def menu_update(request, slug):
 
 
 @login_required
+@require_http_methods(["POST", "GET"])
 def menu_delete(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     if request.method == 'POST':
@@ -75,6 +82,7 @@ def menu_delete(request, slug):
 
 # Admin Dashboard
 @login_required
+@require_http_methods(["GET"])
 def admin_dashboard(request):
     # Implement pagination and search
     query = request.GET.get('q', '')
@@ -90,6 +98,7 @@ def admin_dashboard(request):
 
 
 @login_required
+@require_http_methods(["GET"])
 def menu_item_list(request, slug):
     # Retrieve the menu and ensure it belongs to the user
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
@@ -99,6 +108,7 @@ def menu_item_list(request, slug):
 
 
 @login_required
+@require_http_methods(["POST", "GET"])
 def menu_item_create(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     category_id = request.GET.get('category')
@@ -118,10 +128,12 @@ def menu_item_create(request, slug):
     else:
         form = MenuItemForm(menu=menu, initial=initial_data)
     is_update: bool = False
-    return render(request, 'menu/menu_item/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
+    return render(request, 'menu/menu_item/menu_item_form.html',
+                  {'form': form, 'menu': menu, 'is_update': is_update})
 
 
 @login_required
+@require_http_methods(["GET"])
 def menu_item_detail(request, slug, menu_item_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
@@ -129,6 +141,7 @@ def menu_item_detail(request, slug, menu_item_id):
 
 
 @login_required
+@require_http_methods(["PUT", "POST", "GET"])
 def menu_item_update(request, slug, menu_item_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
@@ -140,10 +153,12 @@ def menu_item_update(request, slug, menu_item_id):
     else:
         form = MenuItemForm(instance=menu_item, menu=menu)
     is_update: bool = True
-    return render(request, 'menu/menu_item/menu_item_form.html', {'form': form, 'menu': menu, 'is_update': is_update})
+    return render(request, 'menu/menu_item/menu_item_form.html',
+                  {'form': form, 'menu': menu, 'menu_item': menu_item, 'is_update': is_update})
 
 
 @login_required
+@require_http_methods(["DELETE", "POST", "GET"])
 def menu_item_delete(request, slug, menu_item_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
@@ -158,6 +173,7 @@ def menu_item_delete(request, slug, menu_item_id):
 
 
 @login_required
+@require_http_methods(["GET"])
 def category_list(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     categories = menu.categories.all()
@@ -165,6 +181,7 @@ def category_list(request, slug):
 
 
 @login_required
+@require_http_methods(["POST", "GET"])
 def category_create(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     if request.method == 'POST':
@@ -180,6 +197,7 @@ def category_create(request, slug):
 
 
 @login_required
+@require_http_methods(["GET"])
 def category_detail(request, slug, category_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     category = get_object_or_404(Category, id=category_id, menus=menu)
@@ -189,6 +207,7 @@ def category_detail(request, slug, category_id):
 
 
 @login_required
+@require_http_methods(["PUT", "POST", "GET"])
 def category_update(request, slug, category_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     category = get_object_or_404(Category, id=category_id, menus=menu)
@@ -205,6 +224,7 @@ def category_update(request, slug, category_id):
 
 
 @login_required
+@require_http_methods(["DELETE", "POST", "GET"])
 def category_delete(request, slug, category_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     category = get_object_or_404(Category, id=category_id, menus=menu)
@@ -218,6 +238,7 @@ def category_delete(request, slug, category_id):
     return render(request, 'menu/category/category_confirm_delete.html', {'menu': menu, 'category': category})
 
 
+@login_required
 def generate_presigned_url(request):
     menu_id = request.GET.get('menu_id')
     menu_item_id = request.GET.get('menu_item_id')
