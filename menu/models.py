@@ -26,12 +26,28 @@ class Menu(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(blank=True, null=True)
     logo = models.ImageField(
-        upload_to='menus/logos/',
         blank=True,
         null=True,
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
     )
     restaurant_name = models.CharField(max_length=255, blank=True, null=True)
+    logo_url = models.URLField(max_length=500, blank=True)
+
+    def generate_logo_presigned_url(self):
+        s3_client = get_s3_client()
+        menu_id = self.id
+        object_name = f"menus/{menu_id}/logo.jpg"
+
+        try:
+            # Generate a presigned URL for reading the logo
+            presigned_url = s3_client.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME, 'Key': object_name},
+                ExpiresIn=3600  # URL expires in 1 hour
+            )
+            return presigned_url
+        except ClientError as e:
+            return None
 
     def clean(self):
         if self.logo:
@@ -61,7 +77,9 @@ class Category(models.Model):
 class MenuItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    photo = models.ImageField(upload_to='menu_items/photos/', blank=True, null=True)
+    photo = models.ImageField(blank=True, null=True,
+                              validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])
+                                          ])
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
     categories = models.ManyToManyField(Category, blank=True, related_name='menu_items')

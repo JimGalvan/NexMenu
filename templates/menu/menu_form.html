@@ -20,7 +20,7 @@
             {% if field.label == 'Logo' %}
                 {% if form.logo.value %}
                     <div>
-                        <img src="{{ form.logo.value.url }}" alt="{{ form.instance.name }} Logo" class="w-32 h-32 mb-4">
+{#                        <img src="{{ form.logo.value.url }}" alt="{{ form.instance.name }} Logo" class="w-32 h-32 mb-4">#}
                         {{ form.logo }}
                     </div>
                 {% else %}

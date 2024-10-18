@@ -1,7 +1,7 @@
 <li class="bg-[#f8f8f8] border border-[#d1d5db] rounded-lg mb-4 p-4 flex items-center justify-between hover:bg-[#e5e5e5] hover:shadow-lg transition duration-300">
     <div class="flex items-center">
-        {% if menu.logo %}
-            <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo"
+        {% if menu.logo_url %}
+            <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
                  class="w-16 h-16 rounded-full mr-4 shadow-md" loading="lazy">
         {% endif %}
         <div>

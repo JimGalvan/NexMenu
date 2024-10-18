@@ -17,8 +17,8 @@
     }
 </style>
 <div class="menu-header flex items-center p-4 bg-[#f3f4f6]">
-    {% if menu.logo %}
-        <img src="{{ menu.logo.url }}" alt="{{ menu.name }} Logo"
+    {% if menu.logo_url %}
+        <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
              class="menu-logo w-40 h-40 rounded-full shadow-lg mr-4" loading="lazy">
     {% endif %}
     <h1 class="menu-title text-3xl font-bold text-[#4a4e69]">{{ menu.name }}</h1>

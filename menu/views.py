@@ -29,7 +29,15 @@ def menu_create(request):
     if request.method == 'POST':
         form = MenuForm(request.POST, request.FILES)
         if form.is_valid():
+
+            # if logo is uploaded, upload it to S3
+            logo = request.FILES.get('logo')
+            logo_url = None
+            if logo:
+                logo_url = upload_logo(form.instance.id, logo)
+
             menu = form.save(commit=False)
+            menu.logo_url = logo_url
             menu.user = request.user
             menu.save()
             return redirect('menu_list')
@@ -59,6 +67,13 @@ def menu_update(request, slug):
     if request.method == 'POST':
         form = MenuForm(request.POST, request.FILES, instance=menu)
         if form.is_valid():
+            # if logo is uploaded, replace the old logo with the new one
+            logo = request.FILES.get('logo')
+            logo_url = None
+            if logo:
+                logo_url = upload_logo(menu.id, logo)
+                menu.logo_url = logo_url
+                
             form.save()
             return redirect('menu_list')
     else:
@@ -149,13 +164,22 @@ def menu_item_detail(request, slug, menu_item_id):
 def menu_item_update(request, slug, menu_item_id):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     menu_item = get_object_or_404(MenuItem, id=menu_item_id, menus=menu)
+
     if request.method == 'POST':
         form = MenuItemForm(request.POST, request.FILES, instance=menu_item, menu=menu)
         if form.is_valid():
+            # Check if a new photo is uploaded
+            photo = request.FILES.get('photo')
+            if photo:
+                # Update the photo in S3 and get the new URL
+                photo_url = upload_photo(menu.id, menu_item.id, photo)
+                menu_item.image_url = photo_url
+
             form.save()
             return redirect('menu_item_list', slug=menu.slug)
     else:
         form = MenuItemForm(instance=menu_item, menu=menu)
+
     is_update: bool = True
     return render(request, 'menu/menu_item/menu_item_form.html',
                   {'form': form, 'menu': menu, 'menu_item': menu_item, 'is_update': is_update})
@@ -255,4 +279,20 @@ def upload_photo(menu_id: str, menu_item_id: str, image_file: bytes):
     )
 
     # Save the Dish object with the S3 URL
+    return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{object_name}"
+
+
+def upload_logo(menu_id: str, image_file: bytes):
+    object_name = f"menus/{menu_id}/logo.jpg"
+    s3_client = get_s3_client()
+
+    # Upload image to S3 using the presigned URL
+    s3_client.put_object(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        Key=object_name,
+        Body=image_file.read(),
+        ContentType=image_file.content_type
+    )
+
+    # Return the S3 URL of the uploaded logo
     return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{object_name}"
