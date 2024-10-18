@@ -31,7 +31,7 @@ class Menu(models.Model):
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
     )
     restaurant_name = models.CharField(max_length=255, blank=True, null=True)
-    logo_url = models.URLField(max_length=500, blank=True)
+    logo_url = models.URLField(max_length=500, blank=True, null=True)
 
     def generate_logo_presigned_url(self):
         s3_client = get_s3_client()
@@ -84,7 +84,7 @@ class MenuItem(models.Model):
     description = models.TextField(blank=True, null=True)
     categories = models.ManyToManyField(Category, blank=True, related_name='menu_items')
     menus = models.ManyToManyField(Menu, blank=True, related_name='menu_items')
-    image_url = models.URLField(max_length=500, blank=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.name
