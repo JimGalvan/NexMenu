@@ -1,6 +1,6 @@
 <li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative flex items-center space-x-4">
-    {% if item.photo %}
-        <img src="{{ item.photo.url }}" alt="{{ item.name }}"
+    {% if item.image_url %}
+        <img src="{{ item.generate_access_presigned_url }}" alt="{{ item.name }}"
              class="w-32 h-32 rounded-lg shadow-md" loading="lazy">
     {% endif %}
     <div class="flex-1">

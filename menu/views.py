@@ -1,15 +1,13 @@
-import boto3
-from botocore.exceptions import ClientError
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 
 from .forms import MenuForm, MenuItemForm, CategoryForm
 from .models import Menu, MenuItem, Category
+from .utils import get_s3_client
 
 
 def home(request):
@@ -100,9 +98,7 @@ def admin_dashboard(request):
 @login_required
 @require_http_methods(["GET"])
 def menu_item_list(request, slug):
-    # Retrieve the menu and ensure it belongs to the user
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
-    # Get all MenuItems associated with this menu
     menu_items = menu.menu_items.all()
     return render(request, 'menu/menu_item/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
 
@@ -122,7 +118,16 @@ def menu_item_create(request, slug):
     if request.method == 'POST':
         form = MenuItemForm(request.POST, request.FILES, menu=menu)
         if form.is_valid():
-            menu_item = form.save()
+
+            # Upload photo to S3
+            photo = request.FILES.get('photo')
+            photo_url = None
+            if photo:
+                photo_url = upload_photo(menu.id, form.instance.id, photo)
+
+            menu_item = form.save(commit=False)
+            menu_item.image_url = photo_url
+            menu_item.save()
             menu_item.menus.add(menu)
             return redirect('menu_item_list', slug=menu.slug)
     else:
@@ -238,25 +243,17 @@ def category_delete(request, slug, category_id):
     return render(request, 'menu/category/category_confirm_delete.html', {'menu': menu, 'category': category})
 
 
-@login_required
-def generate_presigned_url(request):
-    menu_id = request.GET.get('menu_id')
-    menu_item_id = request.GET.get('menu_item_id')
-
+def upload_photo(menu_id: str, menu_item_id: str, image_file: bytes):
     object_name = f"menus/{menu_id}/menu_items/{menu_item_id}/photo.jpg"
-    s3_client = boto3.client('s3',
-                             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                             region_name=settings.AWS_S3_REGION_NAME)
+    s3_client = get_s3_client()
 
-    try:
-        # Generate a presigned URL for file upload
-        response = s3_client.generate_presigned_url(
-            'put_object',
-            Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME, 'Key': object_name},
-            ExpiresIn=3600  # URL expires in 1 hour
-        )
-    except ClientError as e:
-        return JsonResponse({'error': str(e)}, status=400)
+    # Upload image to S3 using the presigned URL
+    s3_client.put_object(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        Key=object_name,
+        Body=image_file.read(),
+        ContentType=image_file.content_type
+    )
 
-    return JsonResponse({'url': response})
+    # Save the Dish object with the S3 URL
+    return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{object_name}"
