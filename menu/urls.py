@@ -18,8 +18,6 @@ urlpatterns = [
     path('menus/<slug:slug>/menu-items/<str:menu_item_id>/', views.menu_item_detail, name='menu_item_detail'),
     path('menus/<slug:slug>/menu-items/<str:menu_item_id>/update/', views.menu_item_update, name='menu_item_update'),
     path('menus/<slug:slug>/menu-items/<str:menu_item_id>/delete/', views.menu_item_delete, name='menu_item_delete'),
-    path('menus/<slug:slug>/menu-items/<str:menu_item_id>/access-presigned-url/', views.generate_access_presigned_url,
-         name='generate_access_presigned_url'),
     path('menus/<slug:slug>/categories/', views.category_list, name='category_list'),
     path('menus/<slug:slug>/categories/create/', views.category_create, name='category_create'),
     path('menus/<slug:slug>/categories/<str:category_id>/', views.category_detail, name='category_detail'),

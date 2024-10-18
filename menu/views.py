@@ -39,7 +39,6 @@ def menu_create(request):
     return render(request, 'menu/menu_form.html', {'form': form, 'is_update': is_update})
 
 
-@login_required
 @require_http_methods(["GET"])
 def menu_detail(request, slug):
     menu = get_object_or_404(Menu, slug=slug)
