@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'menu',
+    'catalog',
 ]
 
 TAILWIND_APP_NAME = 'menu'

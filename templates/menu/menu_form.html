@@ -1,8 +1,4 @@
-<!-- menu_app/templates/menu_app/menu_form.html -->
-
 {% extends 'base.html' %}
-
-
 
 {% block content %}
 <h1 class="text-2xl font-bold mb-4">
@@ -20,7 +16,6 @@
             {% if field.label == 'Logo' %}
                 {% if form.logo.value %}
                     <div>
-{#                        <img src="{{ form.logo.value.url }}" alt="{{ form.instance.name }} Logo" class="w-32 h-32 mb-4">#}
                         {{ form.logo }}
                     </div>
                 {% else %}
@@ -28,7 +23,8 @@
                 {% endif %}
             {% else %}
             <label class="block text-gray-700 text-sm font-bold mb-2">
-                {{ field.label_tag }}
+                {{ field.label_tag }}{% if not field.field.required and not field.is_hidden %}
+                    <span class="text-gray-500">(optional)</span>{% endif %}
             </label>
             {{ field }}
             {% if field.help_text %}
@@ -55,4 +51,12 @@
         </a>
     </div>
 </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var labelElement = document.querySelector('label[for="id_average_rating"]');
+            if (labelElement) {
+                labelElement.remove();
+            }
+        });
+    </script>
 {% endblock %}

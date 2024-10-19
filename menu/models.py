@@ -63,7 +63,64 @@ class Menu(models.Model):
         return self.name
 
 
-# Category Model
+class CuisineType(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class DietaryOption(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Locations(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    address = models.TextField()
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.CharField(max_length=10, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"Address for {self.menu.name}"
+
+
+class MenuDetail(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    menu = models.OneToOneField(Menu, related_name='detail', on_delete=models.CASCADE)
+    average_rating = models.FloatField(blank=True, null=True)
+    operating_hours = models.TextField(blank=True, null=True)
+    locations = models.ManyToManyField(Locations, blank=True, null=True)
+    cuisine_type = models.ManyToManyField(CuisineType, blank=True)
+    dietary_options = models.ManyToManyField(DietaryOption, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    delivery_options = models.CharField(
+        max_length=20,
+        choices=[
+            ('pickup', 'Pickup'),
+            ('delivery', 'Delivery'),
+            ('both', 'Both'),
+            ('none', 'None')
+        ],
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return f"Details for {self.menu.name}"
+
+
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -73,7 +130,6 @@ class Category(models.Model):
         return self.name
 
 
-# MenuItem Model
 class MenuItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
