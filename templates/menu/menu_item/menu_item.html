@@ -1,7 +1,12 @@
 <li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative flex items-center space-x-4">
     {% if item.image_url %}
+        <div class="relative w-32 h-32 rounded-lg shadow-md">
         <img src="{{ item.generate_access_presigned_url }}" alt="{{ item.name }}"
-             class="w-32 h-32 rounded-lg shadow-md" loading="lazy">
+             class="absolute w-32 h-32 rounded-lg shadow-md opacity-0 transition-opacity duration-300"
+             loading="lazy" onload="this.classList.add('opacity-100'); this.nextElementSibling.remove();">
+            <div id="loading-placeholder"
+                 class="w-32 h-32 bg-gray-200 animate-pulse rounded-lg shadow-md"></div>
+        </div>
     {% endif %}
     <div class="flex-1">
         <p class="font-semibold text-[#4a4e69] text-lg">{{ item.name }}</p>
@@ -10,7 +15,8 @@
     </div>
     {% if user.is_authenticated and user == menu.user %}
         <div x-data="{ showOptions: false }" class="absolute top-2 right-2">
-            <button @click="showOptions = !showOptions"
+            <button x-cloak
+                    @click="showOptions = !showOptions"
                     class="bg-[#6b7280] text-white text-sm px-3 py-1 rounded-lg shadow-md hover:bg-[#4a4e69] transition duration-300">
                  Menu Item Options
             </button>

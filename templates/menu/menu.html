@@ -1,8 +1,13 @@
 <li class="bg-[#f8f8f8] border border-[#d1d5db] rounded-lg mb-4 p-4 flex items-center justify-between hover:bg-[#e5e5e5] hover:shadow-lg transition duration-300">
     <div class="flex items-center">
         {% if menu.logo_url %}
-            <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
-                 class="w-16 h-16 rounded-full mr-4 shadow-md" loading="lazy">
+            <div class="relative w-16 h-16 rounded-full mr-4 shadow-md">
+                <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
+                     class="absolute w-16 h-16 rounded-full mr-4 shadow-md opacity-0 transition-opacity duration-300"
+                     loading="lazy" onload="this.classList.add('opacity-100'); this.nextElementSibling.remove();">
+                <div id="loading-placeholder"
+                     class="w-16 h-16 bg-gray-200 animate-pulse rounded-full shadow-md"></div>
+            </div>
         {% endif %}
         <div>
             <a href="{% url 'menu_detail' menu.slug %}"

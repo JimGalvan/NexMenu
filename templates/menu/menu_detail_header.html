@@ -18,8 +18,13 @@
 </style>
 <div class="menu-header flex items-center p-4 bg-[#f3f4f6]">
     {% if menu.logo_url %}
+        <div class="relative w-40 h-40 rounded-full shadow-lg mr-4">
         <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
-             class="menu-logo w-40 h-40 rounded-full shadow-lg mr-4" loading="lazy">
+             class="absolute w-40 h-40 rounded-full shadow-lg mr-4 opacity-0 transition-opacity duration-300"
+             loading="lazy" onload="this.classList.add('opacity-100'); this.nextElementSibling.remove();">
+            <div id="loading-placeholder"
+                 class="w-40 h-40 bg-gray-200 animate-pulse rounded-full shadow-lg"></div>
+        </div>
     {% endif %}
     <h1 class="menu-title text-3xl font-bold text-[#4a4e69]">{{ menu.name }}</h1>
 </div>
