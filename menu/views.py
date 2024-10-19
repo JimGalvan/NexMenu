@@ -5,8 +5,8 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 
-from .forms import MenuForm, MenuItemForm, CategoryForm
-from .models import Menu, MenuItem, Category
+from .forms import MenuForm, MenuItemForm, CategoryForm, MenuDetailForm
+from .models import Menu, MenuItem, Category, MenuDetail
 from .utils import get_s3_client
 
 
@@ -27,24 +27,38 @@ def menu_list(request):
 @require_http_methods(["PUT", "POST", "GET"])
 def menu_create(request):
     if request.method == 'POST':
-        form = MenuForm(request.POST, request.FILES)
-        if form.is_valid():
+        menu_form = MenuForm(request.POST, request.FILES)
+        menu_detail_form = MenuDetailForm(request.POST)
 
-            # if logo is uploaded, upload it to S3
+        if menu_form.is_valid() and menu_detail_form.is_valid():
+            # Handle logo upload to S3 if provided
             logo = request.FILES.get('logo')
             logo_url = None
             if logo:
-                logo_url = upload_logo(form.instance.id, logo)
+                logo_url = upload_logo(menu_form.instance.id, logo)
 
-            menu = form.save(commit=False)
+            # Save the Menu instance
+            menu = menu_form.save(commit=False)
             menu.logo_url = logo_url
             menu.user = request.user
             menu.save()
+
+            # Save the MenuDetail instance, linking it to the Menu
+            menu_detail = menu_detail_form.save(commit=False)
+            menu_detail.menu = menu
+            menu_detail.save()
+
             return redirect('menu_list')
     else:
-        form = MenuForm()
+        menu_form = MenuForm()
+        menu_detail_form = MenuDetailForm()
+
     is_update: bool = False
-    return render(request, 'menu/menu_form.html', {'form': form, 'is_update': is_update})
+    return render(request, 'menu/menu_form.html', {
+        'menu_form': menu_form,
+        'menu_detail_form': menu_detail_form,
+        'is_update': is_update
+    })
 
 
 @require_http_methods(["GET"])
@@ -64,22 +78,42 @@ def menu_detail(request, slug):
 @require_http_methods(["PUT", "POST", "GET"])
 def menu_update(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
+
+    try:
+        menu_detail = MenuDetail.objects.get(menu=menu)
+    except MenuDetail.DoesNotExist:
+        menu_detail = MenuDetail(menu=menu)
+        menu_detail.save()
+
     if request.method == 'POST':
-        form = MenuForm(request.POST, request.FILES, instance=menu)
-        if form.is_valid():
-            # if logo is uploaded, replace the old logo with the new one
+        menu_form = MenuForm(request.POST, request.FILES, instance=menu)
+        menu_detail_form = MenuDetailForm(request.POST, instance=menu_detail)
+
+        if menu_form.is_valid() and menu_detail_form.is_valid():
+            # Handle logo upload replacement
             logo = request.FILES.get('logo')
-            logo_url = None
+
             if logo:
                 logo_url = upload_logo(menu.id, logo)
                 menu.logo_url = logo_url
-                
-            form.save()
+
+            # Save the updated Menu
+            menu_form.save()
+
+            # Save the updated MenuDetail
+            menu_detail_form.save()
+
             return redirect('menu_list')
     else:
-        form = MenuForm(instance=menu)
+        menu_form = MenuForm(instance=menu)
+        menu_detail_form = MenuDetailForm(instance=menu_detail)
+
     is_update: bool = True
-    return render(request, 'menu/menu_form.html', {'form': form, 'is_update': is_update})
+    return render(request, 'menu/menu_form.html', {
+        'menu_form': menu_form,
+        'menu_detail_form': menu_detail_form,
+        'is_update': is_update
+    })
 
 
 @login_required

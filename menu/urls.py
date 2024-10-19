@@ -1,10 +1,6 @@
-# menu_app/urls.py
-
 from django.urls import path
 
 from . import views
-
-# from .views import generate_presigned_url
 
 urlpatterns = [
     path('', views.home, name='home'),

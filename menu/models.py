@@ -21,6 +21,7 @@ class User(AbstractUser):
 # Menu Model
 class Menu(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    show_on_catalog = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='menus')
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
@@ -77,34 +78,13 @@ class DietaryOption(models.Model):
         return self.name
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Locations(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    address = models.TextField()
-    city = models.CharField(max_length=100, blank=True, null=True)
-    state = models.CharField(max_length=100, blank=True, null=True)
-    zip_code = models.CharField(max_length=10, blank=True, null=True)
-    country = models.CharField(max_length=100, blank=True, null=True)
-
-    def __str__(self):
-        return f"Address for {self.menu.name}"
-
-
 class MenuDetail(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     menu = models.OneToOneField(Menu, related_name='detail', on_delete=models.CASCADE)
-    average_rating = models.FloatField(blank=True, null=True)
-    operating_hours = models.TextField(blank=True, null=True)
-    locations = models.ManyToManyField(Locations, blank=True, null=True)
+    operating_hours = models.TextField(blank=True, null=True, max_length=300)
+    location = models.TextField(blank=True, null=True, max_length=300)
     cuisine_type = models.ManyToManyField(CuisineType, blank=True)
     dietary_options = models.ManyToManyField(DietaryOption, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
     delivery_options = models.CharField(
         max_length=20,
         choices=[
@@ -114,7 +94,8 @@ class MenuDetail(models.Model):
             ('none', 'None')
         ],
         blank=True,
-        null=True
+        null=True,
+        default='none'
     )
 
     def __str__(self):

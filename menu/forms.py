@@ -2,34 +2,30 @@
 
 from django import forms
 
-from .models import Menu, Locations, CuisineType, DietaryOption, Tag
+from .models import Menu, MenuDetail
 from .models import MenuItem, Category
 
 
-# menu/forms.py
+class MenuDetailForm(forms.ModelForm):
+    class Meta:
+        model = MenuDetail
+        fields = ['operating_hours', 'location', 'cuisine_type', 'dietary_options', 'delivery_options']
+
 
 class MenuForm(forms.ModelForm):
-    average_rating = forms.FloatField(widget=forms.HiddenInput(), required=False)
-    operating_hours = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), required=False)
-    locations = forms.ModelMultipleChoiceField(queryset=Locations.objects.all(), required=False)
-    cuisine_type = forms.ModelMultipleChoiceField(queryset=CuisineType.objects.all(), required=False)
-    dietary_options = forms.ModelMultipleChoiceField(queryset=DietaryOption.objects.all(), required=False)
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
-    delivery_options = forms.ChoiceField(choices=[
-        ('pickup', 'Pickup'),
-        ('delivery', 'Delivery'),
-        ('both', 'Both'),
-        ('none', 'None')
-    ], required=False)
 
     class Meta:
         model = Menu
-        fields = ['name', 'description', 'logo', 'restaurant_name', 'average_rating', 'operating_hours', 'locations',
-                  'cuisine_type', 'dietary_options', 'tags', 'delivery_options']
+        fields = ['show_on_catalog', 'name', 'description', 'logo', 'restaurant_name']
         widgets = {
             'logo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'description': forms.Textarea(attrs={'rows': 5}),
         }
+
+
+class CombinedMenuForm(forms.Form):
+    menu_form = MenuForm()
+    menu_detail_form = MenuDetailForm()
 
 
 class MenuItemForm(forms.ModelForm):

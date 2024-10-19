@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="intro-container p-8 rounded-lg">
-        <h1 class="intro-title text-4xl font-bold text-center text-gray-800 mb-4">Welcome to the NexMenu</h1>
+        <h1 class="intro-title text-4xl font-bold text-center text-gray-800 mb-4">Welcome to NexMenu</h1>
         <p class="intro-text text-lg text-center text-gray-600 mb-6">Discover the amazing features of our app:</p>
         <ul class="features-list list-disc list-inside text-gray-700 space-y-2">
             <li>Create and manage your menus effortlessly</li>
@@ -14,11 +14,19 @@
             <li>Collaborate with others to build the perfect menu</li>
         </ul>
         <div class="text-center mt-6">
+            <p class="text-gray-600 mb-2">Create a menu for free by signing up!</p>
             <a href="accounts/login" class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded">
                 Login
             </a>
             <a href="accounts/signup" class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded ml-4">
                 Register
+            </a>
+        </div>
+        <div class="text-center mt-6">
+            <p class="intro-text text-lg text-center text-gray-600 mb-6">All menus are public by default, but you can
+                feature your menus in the Catalog to reach a wider audience.</p>
+            <a href="/catalog" class="bg-[#22224b] hover:bg-[#4a4e69] text-white font-bold py-2 px-4 rounded">
+                Explore Our Catalog
             </a>
         </div>
     </div>

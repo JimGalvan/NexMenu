@@ -11,34 +11,62 @@
 
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-4">
-            {% if field.label == 'Logo' %}
-                {% if form.logo.value %}
-                    <div>
-                        {{ form.logo }}
-                    </div>
-                {% else %}
-                    {{ form.logo }}
-                {% endif %}
-            {% else %}
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-                {{ field.label_tag }}{% if not field.field.required and not field.is_hidden %}
-                    <span class="text-gray-500">(optional)</span>{% endif %}
-            </label>
-            {{ field }}
-            {% if field.help_text %}
-                <p class="text-gray-600 text-xs italic">{{ field.help_text }}</p>
-            {% endif %}
-            {% if field.errors %}
-                {% for error in field.errors %}
-                    <p class="text-red-500 text-xs italic">{{ error }}</p>
-                {% endfor %}
-            {% endif %}
-            {% endif %}
+
+        <div>
+            <h3 class="text-lg font-semibold mb-2">Menu Information</h3>
+            {% for field in menu_form %}
+                <div class="mb-4">
+                    {% if field.label == 'Logo' %}
+                        {% if menu_form.logo.value %}
+                            <div>
+                                {{ menu_form.logo }}
+                            </div>
+                        {% else %}
+                            {{ menu_form.logo }}
+                        {% endif %}
+                    {% else %}
+                        <label class="block text-gray-700 text-sm font-bold mb-2">
+                            {{ field.label_tag }}{% if not field.field.required and not field.is_hidden %}
+                                <span class="text-gray-500">(optional)</span>
+                            {% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p class="text-gray-600 text-xs italic">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    <div class="flex items-center justify-between">
+
+        <div>
+            <h3 class="text-lg font-semibold mb-2">Menu Details</h3>
+            {% for field in menu_detail_form %}
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        {{ field.label_tag }}{% if not field.field.required and not field.is_hidden %}
+                            <span class="text-gray-500">(optional)</span>
+                        {% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <p class="text-gray-600 text-xs italic">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p class="text-red-500 text-xs italic">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="flex items-center justify-between">
         <button type="submit" class="btn-primary">
             {% if is_update %}
                 Update Menu
@@ -51,12 +79,4 @@
         </a>
     </div>
 </form>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var labelElement = document.querySelector('label[for="id_average_rating"]');
-            if (labelElement) {
-                labelElement.remove();
-            }
-        });
-    </script>
 {% endblock %}

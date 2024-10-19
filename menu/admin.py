@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import CuisineType, DietaryOption, Tag
+from .models import CuisineType, DietaryOption
 from .models import Menu, MenuItem, Category
 
 admin.site.register(MenuItem)
@@ -23,4 +23,3 @@ class MenuAdmin(admin.ModelAdmin):
 admin.site.register(Menu, MenuAdmin)
 admin.site.register(CuisineType)
 admin.site.register(DietaryOption)
-admin.site.register(Tag)

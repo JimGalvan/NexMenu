@@ -17,14 +17,18 @@
     </div>
     <div class="flex space-x-2">
         <!-- 'Edit' Button -->
+        {% if user.is_authenticated and user == menu.owner %}
         <a href="{% url 'menu_update' menu.slug %}"
            class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b] transition duration-300">
             Edit
         </a>
+        {% endif %}
         <!-- 'Delete' Button -->
+        {% if user.is_authenticated and user == menu.owner %}
         <a href="{% url 'menu_delete' menu.slug %}"
            class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98] transition duration-300">
             Delete
         </a>
+        {% endif %}
     </div>
 </li>

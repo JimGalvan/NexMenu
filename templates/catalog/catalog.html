@@ -1,0 +1,137 @@
+<!-- catalog/templates/catalog/catalog.html -->
+{% extends 'menu/../base.html' %}
+
+{% block container_styles %}
+    bg-[#ffffff] shadow-md mx-auto w-full md:w-3/4 lg:w-2/3 my-6 rounded-lg
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-6 max-w-7xl"> <!-- Adjusted container width -->
+        <h1 class="text-3xl font-bold text-[#22224b] mb-6">Catalog of Menus</h1>
+
+        <!-- Search and Filters Form -->
+        <form method="GET" class="mb-4">
+            <!-- Search Bar -->
+            <div class="mb-4">
+                <input type="text" name="search" placeholder="Search menus..."
+                       value="{{ search_query }}"
+                       class="w-full p-2 border border-[#d1d5db] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#4a4e69]">
+            </div>
+
+            <!-- Filter and Sort Bar -->
+            <div class="mb-4 flex space-x-4">
+                <!-- Category Filter -->
+                <h2 class="text-[#4a4e69]">Filter by:</h2>
+                <select name="category"
+                        class="p-2 border border-[#d1d5db] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#4a4e69]">
+                    <option value="">Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.name }}"
+                                {% if category.name == category_filter %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                {#                <!-- Cuisine Type Filter -->#}
+                {#                <select name="cuisine"#}
+                {#                        class="p-2 border border-[#d1d5db] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#4a4e69]">#}
+                {#                    <option value="">Cuisine Type</option>#}
+                {#                    {% for cuisine in cuisines %}#}
+                {#                        <option value="{{ cuisine.name }}"#}
+                {#                                {% if cuisine.name == cuisine_filter %}selected{% endif %}>#}
+                {#                            {{ cuisine.name }}#}
+                {#                        </option>#}
+                {#                    {% endfor %}#}
+                {#                </select>#}
+
+                <!-- Dietary Options Filter -->
+                <select name="dietary"
+                        class="p-2 border border-[#d1d5db] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#4a4e69]">
+                    <option value="">Dietary</option>
+                    {% for dietary in dietary_options %}
+                        <option value="{{ dietary.name }}"
+                                {% if dietary.name == dietary_filter %}selected{% endif %}>
+                            {{ dietary.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Delivery Options Filter -->
+                <select name="delivery"
+                        class="p-2 border border-[#d1d5db] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#4a4e69]">
+                    <option value="">Delivery</option>
+                    <option value="pickup" {% if delivery_filter == 'pickup' %}selected{% endif %}>Pickup</option>
+                    <option value="delivery" {% if delivery_filter == 'delivery' %}selected{% endif %}>Delivery</option>
+                    <option value="both" {% if delivery_filter == 'both' %}selected{% endif %}>Both</option>
+                    <option value="none" {% if delivery_filter == 'none' %}selected{% endif %}>None</option>
+                </select>
+
+                <!-- Sort Options -->
+                <select name="sort"
+                        class="p-2 border border-[#d1d5db] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#4a4e69]">
+                    <option value="">Sort by</option>
+                    <option value="name_asc" {% if sort_option == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                    <option value="name_desc" {% if sort_option == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                    <option value="rating" {% if sort_option == 'rating' %}selected{% endif %}>Rating</option>
+                </select>
+
+                <!-- Submit Button -->
+                <div class="flex space-x-2">
+                    <button type="submit" class="p-2 bg-[#4a4e69] text-white rounded-lg shadow-md hover:bg-[#22224b]">
+                        Apply
+                    </button>
+                    <button type="button" onclick="window.location.href='{{ request.path }}'"
+                            class="p-2 bg-[#c56c86] text-white rounded-lg shadow-md hover:bg-[#9a8c98]">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Menu List -->
+        <ul class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for menu in menus %}
+                {% include 'menu/menu.html' %}
+            {% empty %}
+                <li class="text-[#6b7280]">No menus found.</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex justify-center">
+            <nav class="inline-flex rounded-md shadow">
+                {% if menus.has_previous %}
+                    <a href="?{% for key, value in request.GET.items %}
+                                {% if key != 'page' %}
+                                    {{ key }}={{ value }}&
+                                {% endif %}
+                            {% endfor %}page={{ menus.previous_page_number }}"
+                       class="px-4 py-2 border border-[#d1d5db] text-[#4a4e69] bg-white hover:bg-[#f8f8f8]">Previous</a>
+                {% endif %}
+
+                {% for num in menus.paginator.page_range %}
+                    {% if menus.number == num %}
+                        <span class="px-4 py-2 border-t border-b border-[#d1d5db] text-white bg-[#4a4e69]">{{ num }}</span>
+                    {% else %}
+                        <a href="?{% for key, value in request.GET.items %}
+                                    {% if key != 'page' %}
+                                        {{ key }}={{ value }}&
+                                    {% endif %}
+                                {% endfor %}page={{ num }}"
+                           class="px-4 py-2 border-t border-b border-[#d1d5db] text-[#4a4e69] bg-white hover:bg-[#f8f8f8]">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if menus.has_next %}
+                    <a href="?{% for key, value in request.GET.items %}
+                                {% if key != 'page' %}
+                                    {{ key }}={{ value }}&
+                                {% endif %}
+                            {% endfor %}page={{ menus.next_page_number }}"
+                       class="px-4 py-2 border border-[#d1d5db] text-[#4a4e69] bg-white hover:bg-[#f8f8f8]">Next</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+{% endblock %}
