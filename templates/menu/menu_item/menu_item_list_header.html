@@ -1,0 +1,13 @@
+<h1 class="text-2xl font-bold text-[#22224b] mb-4">
+    <a
+            href="{% url 'menu_detail' menu.slug %}"
+            class="text-[#4a4e69] hover:text-[#22224b] flex items-center p-2 rounded transition duration-200 ease-in-out"
+            aria-label="Back to Menu: {{ menu.name }}"
+            title="Back to {{ menu.name }} Menu"
+    >
+        {% include 'components/back_icon.html' %}
+        <span class="hover:underline">
+            {{ menu.name }} Menu Items
+        </span>
+    </a>
+</h1>
