@@ -157,6 +157,7 @@ def menu_item_create(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     category_id = request.GET.get('category')
     initial_data = {}
+    category = None
     if category_id:
         try:
             category = Category.objects.get(id=category_id, menus=menu)
@@ -166,6 +167,9 @@ def menu_item_create(request, slug):
     if request.method == 'POST':
         form = MenuItemForm(request.POST, request.FILES, menu=menu)
         if form.is_valid():
+
+            # Add category to menu_item if provided
+
 
             # Upload photo to S3
             photo = request.FILES.get('photo')
@@ -177,6 +181,11 @@ def menu_item_create(request, slug):
             menu_item.image_url = photo_url
             menu_item.save()
             menu_item.menus.add(menu)
+
+            if category:
+                menu_item.categories.add(category)
+                menu_item.save()
+
             return redirect('menu_item_list', slug=menu.slug)
     else:
         form = MenuItemForm(menu=menu, initial=initial_data)
