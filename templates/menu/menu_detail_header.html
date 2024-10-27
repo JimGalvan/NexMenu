@@ -15,13 +15,33 @@
         border-radius: 50%;
         margin-right: 1rem;
     }
+
+    .menu-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    @media (max-width: 640px) {
+        .menu-header {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-title {
+            margin-left: 0;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    }
 </style>
 <div class="menu-header flex items-center p-4 bg-[#f3f4f6]">
     {% if menu.logo_url %}
-        <div class="relative w-40 h-40 rounded-full shadow-lg mr-4">
-        <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
-             class="absolute w-40 h-40 rounded-full shadow-lg mr-4 opacity-0 transition-opacity duration-300"
-             loading="lazy" onload="this.classList.add('opacity-100'); this.nextElementSibling.remove();">
+        <div class="relative w-40 h-40 rounded-full shadow-lg mr-4 menu-logo">
+            <img src="{{ menu.generate_logo_presigned_url }}" alt="{{ menu.name }} Logo"
+                 class="absolute w-40 h-40 rounded-full shadow-lg mr-4 opacity-0 transition-opacity duration-300"
+                 loading="lazy" onload="this.classList.add('opacity-100'); this.nextElementSibling.remove();">
             <div id="loading-placeholder"
                  class="w-40 h-40 bg-gray-200 animate-pulse rounded-full shadow-lg"></div>
         </div>
