@@ -24,10 +24,10 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        ordering = ['-created_at']
         abstract = True
 
 
-# Menu Model
 class Menu(BaseModel):
     show_on_catalog = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='menus')
