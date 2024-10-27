@@ -18,9 +18,17 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
 
-# Menu Model
-class Menu(models.Model):
+class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+# Menu Model
+class Menu(BaseModel):
     show_on_catalog = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='menus')
     name = models.CharField(max_length=255)
@@ -64,22 +72,21 @@ class Menu(models.Model):
         return self.name
 
 
-class CuisineType(models.Model):
+class CuisineType(BaseModel):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
 
 
-class DietaryOption(models.Model):
+class DietaryOption(BaseModel):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
 
 
-class MenuDetail(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class MenuDetail(BaseModel):
     menu = models.OneToOneField(Menu, related_name='detail', on_delete=models.CASCADE)
     operating_hours = models.TextField(blank=True, null=True, max_length=300)
     location = models.TextField(blank=True, null=True, max_length=300)
@@ -102,8 +109,7 @@ class MenuDetail(models.Model):
         return f"Details for {self.menu.name}"
 
 
-class Category(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Category(BaseModel):
     name = models.CharField(max_length=255)
     menus = models.ManyToManyField(Menu, blank=True, related_name='categories')
 
@@ -111,8 +117,7 @@ class Category(models.Model):
         return self.name
 
 
-class MenuItem(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class MenuItem(BaseModel):
     name = models.CharField(max_length=255)
     photo = models.ImageField(blank=True, null=True,
                               validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])
