@@ -64,7 +64,7 @@ def menu_create(request):
 @require_http_methods(["GET"])
 def menu_detail(request, slug):
     menu = get_object_or_404(Menu, slug=slug)
-    categories = menu.categories.all()
+    categories = menu.categories.all().order_by("-created_at")
     menu_items_without_category = menu.menu_items.filter(categories__isnull=True)
     context = {
         'menu': menu,
@@ -147,7 +147,7 @@ def admin_dashboard(request):
 @require_http_methods(["GET"])
 def menu_item_list(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
-    menu_items = menu.menu_items.all()
+    menu_items = menu.menu_items.all().order_by('-created_at')
     return render(request, 'menu/menu_item/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
 
 
