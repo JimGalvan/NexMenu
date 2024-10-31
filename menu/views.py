@@ -168,9 +168,6 @@ def menu_item_create(request, slug):
         form = MenuItemForm(request.POST, request.FILES, menu=menu)
         if form.is_valid():
 
-            # Add category to menu_item if provided
-
-
             # Upload photo to S3
             photo = request.FILES.get('photo')
             photo_url = None

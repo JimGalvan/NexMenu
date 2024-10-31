@@ -4,20 +4,29 @@
     {% include 'menu/menu_item/menu_item_list_header.html' %}
     <a href="{% url 'menu_item_create' menu.slug %}"
        class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Create New Menu Item</a>
-<ul class="mt-4">
-    {% for item in menu_items %}
-    <li class="border-b py-2 flex justify-between">
-        <div>
-            <a href="{% url 'menu_item_detail' menu.slug item.id %}" class="text-lg font-semibold text-[#4a4e69] hover:text-[#22224b]">{{ item.name }}</a>
-            <p class="text-[#9a8c98]">${{ item.price }}</p>
-        </div>
-        <div>
-            <a href="{% url 'menu_item_update' menu.slug item.id %}" class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Edit</a>
-            <a href="{% url 'menu_item_delete' menu.slug item.id %}" class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98]">Delete</a>
-        </div>
-    </li>
-    {% empty %}
-    <li class="text-[#9a8c98]">No menu items for this menu.</li>
-    {% endfor %}
-</ul>
+    <ul class="mt-4">
+        {% for item in menu_items %}
+            <li class="border-b py-2 flex justify-between">
+                <div class="flex items-center">
+                    <div class="m-2">
+                        {% include 'components/image_display.html' with image_url=item.generate_access_presigned_url alt_text=item.name width="16" height="16" %}
+                    </div>
+                    <div>
+                        <a href="{% url 'menu_item_detail' menu.slug item.id %}"
+                           class="text-lg font-semibold text-[#4a4e69] hover:text-[#22224b]">{{ item.name }}</a>
+                        <p class="text-[#9a8c98]">${{ item.price }}</p>
+                        <p class="text-[#9a8c98]">{{ item.category.name }}</p>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'menu_item_update' menu.slug item.id %}"
+                       class="bg-[#4a4e69] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#22224b]">Edit</a>
+                    <a href="{% url 'menu_item_delete' menu.slug item.id %}"
+                       class="bg-[#c56c86] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#9a8c98]">Delete</a>
+                </div>
+            </li>
+        {% empty %}
+            <li class="text-[#9a8c98]">No menu items for this menu.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

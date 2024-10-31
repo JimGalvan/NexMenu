@@ -1,0 +1,12 @@
+{% with width=width|default:"16" height=height|default:"16" placeholder_url=placeholder_url|default:"/static/menu-item-photo-placeholder.svg" %}
+    <div class="relative w-{{ width }} h-{{ height }} rounded-lg shadow-md flex items-center justify-center bg-gray-200">
+        <img src="{{ image_url|default:placeholder_url }}" alt="{{ alt_text }}"
+             class="w-{{ width }} h-{{ height }} rounded-lg shadow-md opacity-0 transition-opacity duration-300"
+             loading="lazy"
+             onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
+             onload="this.classList.add('opacity-100');">
+
+        <!-- "No photo available" message -->
+        <span class="text-gray-500 text-sm hidden">No photo</span>
+    </div>
+{% endwith %}

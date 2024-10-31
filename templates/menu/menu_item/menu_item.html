@@ -1,12 +1,6 @@
 <li class="bg-[#f8f8f8] p-4 rounded-lg shadow-sm hover:bg-[#eaeaea] transition duration-300 relative flex items-center space-x-4">
     {% if item.image_url %}
-        <div class="relative w-32 h-32 rounded-lg shadow-md">
-        <img src="{{ item.generate_access_presigned_url }}" alt="{{ item.name }}"
-             class="absolute w-32 h-32 rounded-lg shadow-md opacity-0 transition-opacity duration-300"
-             loading="lazy" onload="this.classList.add('opacity-100'); this.nextElementSibling.remove();">
-            <div id="loading-placeholder"
-                 class="w-32 h-32 bg-gray-200 animate-pulse rounded-lg shadow-md"></div>
-        </div>
+        {% include 'components/image_display.html' with image_url=item.generate_access_presigned_url alt_text=item.name width="32" height="32" %}
     {% endif %}
     <div class="flex-1">
         <p class="font-semibold text-[#4a4e69] text-lg">{{ item.name }}</p>
