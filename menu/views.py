@@ -148,7 +148,16 @@ def admin_dashboard(request):
 def menu_item_list(request, slug):
     menu = get_object_or_404(Menu, slug=slug, user=request.user)
     menu_items = menu.menu_items.all()
-    return render(request, 'menu/menu_item/menu_item_list.html', {'menu': menu, 'menu_items': menu_items})
+
+    # Add pagination
+    paginator = Paginator(menu_items, 10)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'menu/menu_item/menu_item_list.html', {
+        'menu': menu,
+        'page_obj': page_obj
+    })
 
 
 @login_required
