@@ -131,6 +131,12 @@ class MenuItem(BaseModel):
     def __str__(self):
         return self.name
 
+    def get_category_name(self):
+        try:
+            return self.categories.first().name
+        except AttributeError:
+            return "Other"
+
     def generate_access_presigned_url(self):
         s3_client = get_s3_client()
 

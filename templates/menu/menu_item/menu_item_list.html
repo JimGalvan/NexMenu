@@ -15,7 +15,9 @@
                         <a href="{% url 'menu_item_detail' menu.slug item.id %}"
                            class="text-lg font-semibold text-[#4a4e69] hover:text-[#22224b]">{{ item.name }}</a>
                         <p class="text-[#9a8c98]">${{ item.price }}</p>
-                        <p class="text-[#9a8c98]">{{ item.category.name }}</p>
+                        <p class="text-sm">Category:
+                            <span class="bg-[#F2e9e4] text-[#22224b] px-2 py-1 rounded">{{ item.get_category_name }}</span>
+                        </p>
                     </div>
                 </div>
                 <div>
