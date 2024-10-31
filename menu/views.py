@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 
+from .constants import PAGINATION_PAGE_SIZE
 from .forms import MenuForm, MenuItemForm, CategoryForm, MenuDetailForm
 from .models import Menu, MenuItem, Category, MenuDetail
 from .utils import get_s3_client
@@ -150,7 +151,7 @@ def menu_item_list(request, slug):
     menu_items = menu.menu_items.all()
 
     # Add pagination
-    paginator = Paginator(menu_items, 10)  # Show 10 items per page
+    paginator = Paginator(menu_items, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
