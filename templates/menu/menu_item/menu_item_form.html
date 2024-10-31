@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="text-2xl font-bold text-[#22224b] mb-4">
+<h1 class="text-2xl font-bold text-[#22224b] mb-4">
     {% if is_update %}
         Update Menu Item for "{{ menu.name }}"
     {% else %}
@@ -9,8 +9,9 @@
     {% endif %}
 </h1>
 
-    <form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    
     {% for field in form %}
         <div class="mb-4">
             <label class="block text-[#4a4e69] text-sm font-bold mb-2">
@@ -27,7 +28,16 @@
             {% endif %}
         </div>
     {% endfor %}
-    <div class="flex items-center justify-between">
+
+    <!-- Hidden input to act as the flag for removing categories -->
+    <input type="hidden" name="remove_category" id="remove_category_flag" value="false">
+
+    <!-- Button to remove category -->
+    <button type="button" onclick="removeCategory()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">
+        Remove Category
+    </button>
+
+    <div class="flex items-center justify-between mt-4">
         <button type="submit"
                 class="bg-[#4a4e69] hover:bg-[#22224b] text-white font-bold py-2 px-4 rounded-lg focus:outline-none">
             {% if is_update %}
@@ -40,4 +50,17 @@
            class="inline-block align-baseline font-bold text-sm text-[#4a4e69] hover:text-[#22224b]">Cancel</a>
     </div>
 </form>
+
+<script>
+    function removeCategory() {
+        // Unselect all options in the categories dropdown
+        const categoryField = document.querySelector("select[name='categories']");
+        if (categoryField) {
+            categoryField.value = '';  // Clear selection
+        }
+
+        // Set the hidden input flag to true
+        document.getElementById('remove_category_flag').value = 'true';
+    }
+</script>
 {% endblock %}

@@ -210,7 +210,12 @@ def menu_item_update(request, slug, menu_item_id):
 
     if request.method == 'POST':
         form = MenuItemForm(request.POST, request.FILES, instance=menu_item, menu=menu)
+
         if form.is_valid():
+            # Check if "Remove Category" flag is set
+            if request.POST.get('remove_category') == 'true':
+                menu_item.categories.clear()
+
             # Check if a new photo is uploaded
             photo = request.FILES.get('photo')
             if photo:
@@ -224,8 +229,12 @@ def menu_item_update(request, slug, menu_item_id):
         form = MenuItemForm(instance=menu_item, menu=menu)
 
     is_update: bool = True
-    return render(request, 'menu/menu_item/menu_item_form.html',
-                  {'form': form, 'menu': menu, 'menu_item': menu_item, 'is_update': is_update})
+    return render(request, 'menu/menu_item/menu_item_form.html', {
+        'form': form,
+        'menu': menu,
+        'menu_item': menu_item,
+        'is_update': is_update
+    })
 
 
 @login_required
