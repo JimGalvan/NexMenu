@@ -89,7 +89,12 @@
             padding: 8px;
             background-color: #fff;
             color: #333;
-        }   
+        }
+
+        select option:checked {
+            background-color: #4a4e69; /* Background color for selected option */
+            color: #fff; /* Text color for selected option */
+        }
 
     </style>
     {% if ENVIRONMENT == 'production' %}
