@@ -20,5 +20,5 @@ DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://nexmenu-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://nexmenu-production.up.railway.app', 'https://www.nexmenus.com', 'https://nexmenus.com']
 
